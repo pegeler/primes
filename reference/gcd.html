@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the Primorial — primorial • primes</title>
+<title>Find the Greatest Common Divisor, Least Common Multiple, or Coprimality — gcd • primes</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Compute the Primorial — primorial" />
-<meta property="og:description" content="Computes the primorial for prime numbers and natural numbers." />
+<meta property="og:title" content="Find the Greatest Common Divisor, Least Common Multiple, or Coprimality — gcd" />
+<meta property="og:description" content="These functions provide vectorized computations for the greatest common
+divisor (gcd), least common multiple (lcm), and coprimality." />
 
 
 
@@ -108,37 +109,41 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the Primorial</h1>
-    <small class="dont-index">Source: <a href='http://github.com/ironholds/primes/blob/master/R/primorial.R'><code>R/primorial.R</code></a></small>
-    <div class="hidden name"><code>primorial.Rd</code></div>
+    <h1>Find the Greatest Common Divisor, Least Common Multiple, or Coprimality</h1>
+    <small class="dont-index">Source: <a href='http://github.com/ironholds/primes/blob/master/R/RcppExports.R'><code>R/RcppExports.R</code></a></small>
+    <div class="hidden name"><code>gcd.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Computes the primorial for prime numbers and natural numbers.</p>
+    <p>These functions provide vectorized computations for the greatest common
+divisor (<code>gcd</code>), least common multiple (<code>lcm</code>), and coprimality.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>primorial_n</span>(<span class='no'>n</span>)
+    <pre class="usage"><span class='fu'>gcd</span>(<span class='no'>m</span>, <span class='no'>n</span>)
 
-<span class='fu'>primorial_p</span>(<span class='no'>n</span>)</pre>
+<span class='fu'>lcm</span>(<span class='no'>m</span>, <span class='no'>n</span>)
+
+<span class='fu'>is_coprime</span>(<span class='no'>m</span>, <span class='no'>n</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>n</th>
-      <td><p>an integer indicating the numbers to be used in the computation. See
-<em>Details</em> for more information.</p></td>
+      <th>m, n</th>
+      <td><p>integer vectors.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric vector of length 1.</p>
+    <p>A vector of the length of longest input vector. If one
+vector is shorter, it will be recycled. The <code>gcd</code> and <code>lcm</code> functions
+return an integer vector while <code>is_coprime</code> returns a logical vector.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The <code>primorial_p</code> function computes the primorial with respect the the first
-<code>n</code> <em>prime</em> numbers; while the <code>primorial_n</code> function computes the primorial
-with respect the the first <code>n</code> <em>natural</em> numbers.</p>
+    <p>The greatest common divisor uses Euclid's algorithm, a fast and widely used
+method. The least common multiple and coprimality are computed using the
+GCD.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
