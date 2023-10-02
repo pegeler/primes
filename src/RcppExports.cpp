@@ -13,41 +13,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// gcd_
-int gcd_(int m, int n);
-static SEXP _primes_gcd__try(SEXP mSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(gcd_(m, n));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _primes_gcd_(SEXP mSEXP, SEXP nSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_primes_gcd__try(mSEXP, nSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
 // Rgcd_
 int Rgcd_(const Rcpp::IntegerVector& x);
 static SEXP _primes_Rgcd__try(SEXP xSEXP) {
@@ -63,41 +28,6 @@ RcppExport SEXP _primes_Rgcd_(SEXP xSEXP) {
     {
         Rcpp::RNGScope rcpp_rngScope_gen;
         rcpp_result_gen = PROTECT(_primes_Rgcd__try(xSEXP));
-    }
-    Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
-    if (rcpp_isInterrupt_gen) {
-        UNPROTECT(1);
-        Rf_onintr();
-    }
-    bool rcpp_isLongjump_gen = Rcpp::internal::isLongjumpSentinel(rcpp_result_gen);
-    if (rcpp_isLongjump_gen) {
-        Rcpp::internal::resumeJump(rcpp_result_gen);
-    }
-    Rboolean rcpp_isError_gen = Rf_inherits(rcpp_result_gen, "try-error");
-    if (rcpp_isError_gen) {
-        SEXP rcpp_msgSEXP_gen = Rf_asChar(rcpp_result_gen);
-        UNPROTECT(1);
-        Rf_error(CHAR(rcpp_msgSEXP_gen));
-    }
-    UNPROTECT(1);
-    return rcpp_result_gen;
-}
-// scm_
-int scm_(int m, int n);
-static SEXP _primes_scm__try(SEXP mSEXP, SEXP nSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    rcpp_result_gen = Rcpp::wrap(scm_(m, n));
-    return rcpp_result_gen;
-END_RCPP_RETURN_ERROR
-}
-RcppExport SEXP _primes_scm_(SEXP mSEXP, SEXP nSEXP) {
-    SEXP rcpp_result_gen;
-    {
-        Rcpp::RNGScope rcpp_rngScope_gen;
-        rcpp_result_gen = PROTECT(_primes_scm__try(mSEXP, nSEXP));
     }
     Rboolean rcpp_isInterrupt_gen = Rf_inherits(rcpp_result_gen, "interrupted-error");
     if (rcpp_isInterrupt_gen) {
@@ -641,9 +571,7 @@ RcppExport SEXP _primes_generate_primes_(SEXP minSEXP, SEXP maxSEXP) {
 static int _primes_RcppExport_validate(const char* sig) { 
     static std::set<std::string> signatures;
     if (signatures.empty()) {
-        signatures.insert("int(*gcd_)(int,int)");
         signatures.insert("int(*Rgcd_)(const Rcpp::IntegerVector&)");
-        signatures.insert("int(*scm_)(int,int)");
         signatures.insert("int(*Rscm_)(const Rcpp::IntegerVector&)");
         signatures.insert("Rcpp::IntegerVector(*gcd)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
         signatures.insert("Rcpp::IntegerVector(*scm)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
@@ -665,9 +593,7 @@ static int _primes_RcppExport_validate(const char* sig) {
 
 // registerCCallable (register entry points for exported C++ functions)
 RcppExport SEXP _primes_RcppExport_registerCCallable() { 
-    R_RegisterCCallable("primes", "_primes_gcd_", (DL_FUNC)_primes_gcd__try);
     R_RegisterCCallable("primes", "_primes_Rgcd_", (DL_FUNC)_primes_Rgcd__try);
-    R_RegisterCCallable("primes", "_primes_scm_", (DL_FUNC)_primes_scm__try);
     R_RegisterCCallable("primes", "_primes_Rscm_", (DL_FUNC)_primes_Rscm__try);
     R_RegisterCCallable("primes", "_primes_gcd", (DL_FUNC)_primes_gcd_try);
     R_RegisterCCallable("primes", "_primes_scm", (DL_FUNC)_primes_scm_try);
@@ -688,9 +614,7 @@ RcppExport SEXP _primes_RcppExport_registerCCallable() {
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_primes_gcd_", (DL_FUNC) &_primes_gcd_, 2},
     {"_primes_Rgcd_", (DL_FUNC) &_primes_Rgcd_, 1},
-    {"_primes_scm_", (DL_FUNC) &_primes_scm_, 2},
     {"_primes_Rscm_", (DL_FUNC) &_primes_Rscm_, 1},
     {"_primes_gcd", (DL_FUNC) &_primes_gcd, 2},
     {"_primes_scm", (DL_FUNC) &_primes_scm, 2},

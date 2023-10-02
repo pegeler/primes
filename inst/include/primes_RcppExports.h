@@ -24,27 +24,6 @@ namespace primes {
         }
     }
 
-    inline int gcd_(int m, int n) {
-        typedef SEXP(*Ptr_gcd_)(SEXP,SEXP);
-        static Ptr_gcd_ p_gcd_ = NULL;
-        if (p_gcd_ == NULL) {
-            validateSignature("int(*gcd_)(int,int)");
-            p_gcd_ = (Ptr_gcd_)R_GetCCallable("primes", "_primes_gcd_");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_gcd_(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<int >(rcpp_result_gen);
-    }
-
     inline int Rgcd_(const Rcpp::IntegerVector& x) {
         typedef SEXP(*Ptr_Rgcd_)(SEXP);
         static Ptr_Rgcd_ p_Rgcd_ = NULL;
@@ -56,27 +35,6 @@ namespace primes {
         {
             RNGScope RCPP_rngScope_gen;
             rcpp_result_gen = p_Rgcd_(Shield<SEXP>(Rcpp::wrap(x)));
-        }
-        if (rcpp_result_gen.inherits("interrupted-error"))
-            throw Rcpp::internal::InterruptedException();
-        if (Rcpp::internal::isLongjumpSentinel(rcpp_result_gen))
-            throw Rcpp::LongjumpException(rcpp_result_gen);
-        if (rcpp_result_gen.inherits("try-error"))
-            throw Rcpp::exception(Rcpp::as<std::string>(rcpp_result_gen).c_str());
-        return Rcpp::as<int >(rcpp_result_gen);
-    }
-
-    inline int scm_(int m, int n) {
-        typedef SEXP(*Ptr_scm_)(SEXP,SEXP);
-        static Ptr_scm_ p_scm_ = NULL;
-        if (p_scm_ == NULL) {
-            validateSignature("int(*scm_)(int,int)");
-            p_scm_ = (Ptr_scm_)R_GetCCallable("primes", "_primes_scm_");
-        }
-        RObject rcpp_result_gen;
-        {
-            RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_scm_(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

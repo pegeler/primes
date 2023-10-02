@@ -1,11 +1,21 @@
 #include <Rcpp.h>
 #include <algorithm>  // max, swap
-#include <numeric>    // accumulate
+#include <numeric>    // accumulate, lcm, gcd
 #include <cstdlib>    // abs
+
 
 // [[Rcpp::interfaces(r, cpp)]]
 
-// [[Rcpp::export]]
+
+#ifdef __cpp_lib_gcd_lcm
+// Standard library implementations of gcd and lcm become available in C++17.
+// C++17 is the default standard as of R 4.3.0.
+
+auto gcd_ = std::gcd<int, int>;
+auto scm_ = std::lcm<int, int>;
+
+#else
+
 int gcd_(int m, int n) {
 
   m = abs(m), n = abs(n);
@@ -22,6 +32,12 @@ int gcd_(int m, int n) {
   return m;
 }
 
+int scm_(int m, int n) {
+  return m == 0 || n == 0 ? 0 : abs(m / gcd_(m, n) * n);
+}
+#endif
+
+
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
   int out = x[0];
@@ -29,11 +45,6 @@ int Rgcd_(const Rcpp::IntegerVector &x) {
     out = gcd_(out, *it);
   }
   return out;
-}
-
-// [[Rcpp::export]]
-int scm_(int m, int n) {
-  return m == 0 || n == 0 ? 0 : abs(m / gcd_(m, n) * n);
 }
 
 // [[Rcpp::export]]
