@@ -1,11 +1,11 @@
 Package: primes
 Type: Package
 Title: Fast Functions for Prime Numbers
-Version: 1.6.0
-Date: 2023-12-30
+Version: 1.6.1
+Date: 2025-01-28
 Authors@R: c(
-    person("Os", "Keyes", email = "ironholds@gmail.com", role = c("aut", "cre")),
-    person("Paul", "Egeler", email = "paulegeler@gmail.com", role = c("aut"), comment = c(ORCID = "0000-0001-6948-9498"))
+    person("Os", "Keyes", email = "ironholds@gmail.com", role = c("aut")),
+    person("Paul", "Egeler", email = "paulegeler@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6948-9498"))
     )
 Description: Fast functions for dealing with prime numbers, such as testing
     whether a number is prime and generating a sequence prime numbers.

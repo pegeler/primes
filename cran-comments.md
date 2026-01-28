@@ -1,3 +1,12 @@
+## Version 1.6.1
+
+The failure observed in _tests/failures/testthat.Rout_ was inadvertently carried
+over from debugging version 1.5.1. The files have been purged and the path has
+been added to _.Rbuildignore_.
+
+We have also confirmed again that no undefined behavior is detected by running
+all tests using the `rocker/r-devel-ubsan-clang` on the latest build.
+
 ## Version 1.5.1
 
 ### Purpose
