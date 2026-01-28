@@ -41,7 +41,7 @@ Rcpp::LogicalVector is_prime(const Rcpp::IntegerVector &x) {
   Rcpp::LogicalVector out(len);
 
   for (R_xlen_t i = 0; i < len; i++)
-    out[i] = is_prime_(x[i]);
+    out[i] = x[i] == NA_INTEGER ? NA_INTEGER : is_prime_(x[i]);
 
   return out;
 }
