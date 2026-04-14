@@ -13,10 +13,21 @@ test_that("Non-primes are determined to be not-prime", {
 })
 
 test_that("NAs are NAs", {
-  expect_equal(is_prime(c(4L, NA, 5L, bigz)), c(FALSE, NA, TRUE, TRUE))
+  expect_equal(is_prime(c(4L, NA, 5L)), c(FALSE, NA, TRUE))
 })
 
-test_that("bigz are not silently coerced", {
-  bigz <- 10 ^ 10 + 19
-  expect_error(is_prime(bigz))
+test_that("non-natural numbers return NA", {
+  expect_equal(is_prime(c(-5L, 0L, 1L, 2L)), c(NA, NA, FALSE, TRUE))
+})
+
+test_that("values exceeding integer range are rejected", {
+  expect_error(is_prime(10 ^ 10 + 19))
+})
+
+test_that("double input with whole values works", {
+  expect_equal(is_prime(c(4.0, 5.0)), c(FALSE, TRUE))
+})
+
+test_that("non-integer doubles warn about truncation", {
+  expect_warning(is_prime(5.7))
 })

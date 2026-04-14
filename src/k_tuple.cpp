@@ -26,8 +26,6 @@ match_tuple(std::vector<int>::iterator first,
   return first;
 }
 
-//' @rdname k_tuple
-//' @export
 // [[Rcpp::export]]
 Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
   Rcpp::List out;
@@ -53,8 +51,6 @@ Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
 }
 
 // Because sexy prime triplets stipulate that p + 18 is composite...
-//' @rdname k_tuple
-//' @export
 // [[Rcpp::export]]
 Rcpp::List sexy_prime_triplets(int min, int max) {
   Rcpp::List out;

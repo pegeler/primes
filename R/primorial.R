@@ -17,6 +17,8 @@ NULL
 #' @rdname primorial
 #' @export
 primorial_n <- function(n) {
+  n <- validate_inputs(n, scalar = TRUE)
+
   if (n < 0)
     stop("'n' must be >= zero")
 
@@ -26,6 +28,8 @@ primorial_n <- function(n) {
 #' @rdname primorial
 #' @export
 primorial_p <- function(n) {
+  n <- validate_inputs(n, scalar = TRUE)
+
   if (n < 0)
     stop("'n' must be >= zero")
 

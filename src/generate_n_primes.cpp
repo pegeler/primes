@@ -5,8 +5,6 @@
 
 // [[Rcpp::interfaces(r, cpp)]]
 
-//' @rdname generate_primes
-//' @export
 // [[Rcpp::export]]
 std::vector<int> generate_n_primes(int n) {
   if (n < 1)

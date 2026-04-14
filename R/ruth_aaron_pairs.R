@@ -12,6 +12,8 @@
 #' @return A List of integer pairs.
 #' @export
 ruth_aaron_pairs <-function(min, max, distinct = FALSE) {
+  min <- validate_inputs(min, scalar = TRUE)
+  max <- validate_inputs(max, scalar = TRUE)
   n <- seq(min, max)
 
   sums <- vapply(

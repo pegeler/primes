@@ -17,5 +17,14 @@
 #' @author Paul Egeler, MS
 #' @export
 generate_primes <- function(min = 2L, max){
+  min <- validate_inputs(min, scalar = TRUE)
+  max <- validate_inputs(max, scalar = TRUE)
   .Call('_primes_generate_primes_', PACKAGE = 'primes', min, max)
+}
+
+#' @rdname generate_primes
+#' @export
+generate_n_primes <- function(n) {
+  n <- validate_inputs(n, scalar = TRUE)
+  .Call('_primes_generate_n_primes', PACKAGE = 'primes', n)
 }

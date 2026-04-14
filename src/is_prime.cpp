@@ -18,30 +18,15 @@ bool is_prime_(int x) {
   return true;
 }
 
-//' Test for Prime Numbers
-//'
-//' Test whether a vector of numbers is prime or composite.
-//'
-//' @param x an integer vector containing elements to be tested for primality.
-//'
-//' @examples
-//' is_prime(4:7)
-//' ## [1] FALSE  TRUE FALSE  TRUE
-//'
-//' is_prime(1299827)
-//' ## [1] TRUE
-//'
-//' @return A logical vector.
-//' @author Os Keyes and Paul Egeler, MS
-//' @export
 // [[Rcpp::export]]
 Rcpp::LogicalVector is_prime(const Rcpp::IntegerVector &x) {
 
   R_xlen_t len = x.size();
   Rcpp::LogicalVector out(len);
 
+  // NOTE: `x[i] < 1` is doing double duty as NA check and domain check.
   for (R_xlen_t i = 0; i < len; i++)
-    out[i] = x[i] == NA_INTEGER ? NA_INTEGER : is_prime_(x[i]);
+    out[i] = x[i] < 1 ? NA_INTEGER : is_prime_(x[i]);
 
   return out;
 }

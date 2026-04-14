@@ -34,6 +34,11 @@ test_that("NAs are handled properly", {
   )
 })
 
+test_that("double input is validated", {
+  expect_equal(prime_factors(6.0), list(c(2L, 3L)))
+  expect_error(prime_factors(3e9))
+})
+
 context("Ruth-Aaron pairs")
 
 test_that("Compute with _all_ factors", {

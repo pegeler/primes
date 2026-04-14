@@ -23,7 +23,7 @@
 #'
 #' @param m,n,... integer vectors.
 #'
-#'@examples
+#' @examples
 #' gcd(c(18, 22, 49, 13), 42)
 #' ## [1] 6 2 7 1
 #'
@@ -62,8 +62,33 @@ NULL
 
 #' @rdname gcd
 #' @export
+gcd <- function(m, n) {
+  m <- validate_inputs(m)
+  n <- validate_inputs(n)
+  .Call('_primes_gcd', PACKAGE = 'primes', m, n)
+}
+
+#' @rdname gcd
+#' @aliases lcm
+#' @export
+scm <- function(m, n) {
+  m <- validate_inputs(m)
+  n <- validate_inputs(n)
+  .Call('_primes_scm', PACKAGE = 'primes', m, n)
+}
+
+#' @rdname gcd
+#' @export
+coprime <- function(m, n) {
+  m <- validate_inputs(m)
+  n <- validate_inputs(n)
+  .Call('_primes_coprime', PACKAGE = 'primes', m, n)
+}
+
+#' @rdname gcd
+#' @export
 Rgcd <- function(...) {
-  x <- unlist(list(...))
+  x <- validate_inputs(unlist(list(...)))
   if (length(x))
     Rgcd_(x)
   else
@@ -73,7 +98,7 @@ Rgcd <- function(...) {
 #' @rdname gcd
 #' @export
 Rscm <- function(...) {
-  x <- unlist(list(...))
+  x <- validate_inputs(unlist(list(...)))
   if (length(x))
     Rscm_(x)
   else

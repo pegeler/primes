@@ -24,6 +24,7 @@ functions include:
 - computing Euler's totient (phi)
 
 The package also provides an R dataset containing the first one thousand primes.
+Most functions are vectorized and implemented in C++ for speed.
 
 ## Installation
 
@@ -58,3 +59,59 @@ You can also generate all the prime numbers between 101 and 199 with the followi
 generate_primes(101, 199)
 ## [1] 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199
 ```
+
+## Input Handling
+
+All functions in `primes` expect integer input. Because R's default numeric
+type is `double`, the package validates inputs and converts them to integers
+automatically. The following checks are performed on `double` inputs:
+
+- **Values exceeding 32-bit integer range** (larger than
+  &plusmn;2,147,483,647) raise an error.
+- **Infinite values** (`Inf`, `-Inf`) raise an error.
+- **Non-whole numbers** (e.g., `5.3`) are truncated to integers with a
+  warning.
+
+Integer inputs bypass the above checks and are passed directly to the C++
+backend.
+
+### `NA` Handling
+
+`NA` values are passed through and handled element-wise. Functions like
+`is_prime`, `next_prime`, `gcd`, etc. will return `NA` in the corresponding
+position. Functions that take scalar arguments (e.g., `generate_n_primes`,
+`prime_count`) will error on `NA`.
+
+### Negative Numbers
+
+Most functions in the package accept negative integers without error, though
+the results follow mathematical convention:
+
+- `is_prime`: returns `NA` for non-natural numbers (primality is defined
+  only for natural numbers).
+- `next_prime` / `prev_prime`: negative values are valid starting points
+  for the search.
+- `prime_factors`: returns `integer(0)` for values less than 2.
+- `gcd`, `scm`, `coprime`: use absolute values internally, so negative
+  inputs are handled correctly.
+
+Some functions require strictly positive input and will error on zero or
+negative values:
+
+- `phi`: Euler's totient is defined only for positive integers.
+- `prime_count` / `nth_prime_estimate`: require positive `n` because the
+  underlying formulas involve `log(n)`.
+
+### Disabling Validation
+
+Input validation for `double` inputs can be turned off globally by setting:
+
+```r
+options(primes.validate_inputs = FALSE)
+```
+
+When disabled, `double` inputs are silently coerced via `as.integer()`
+without any range or finiteness checks. This is not recommended for
+interactive use but may be useful for performance-sensitive code where inputs
+are known to be safe. Note that scalar, `NA`, and positivity checks still
+apply regardless of this setting.

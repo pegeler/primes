@@ -25,7 +25,13 @@ int gcd_(int m, int n) {
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
   int out = x[0];
+
+  if (Rcpp::IntegerVector::is_na(out))
+    return NA_INTEGER;
+
   for (auto it = x.begin() + 1; it != x.end() && out != 1; ++it) {
+    if (Rcpp::IntegerVector::is_na(*it))
+      return NA_INTEGER;
     out = gcd_(out, *it);
   }
   return out;
@@ -38,6 +44,8 @@ int scm_(int m, int n) {
 
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
+  if (Rcpp::any(Rcpp::is_na(x)))
+    return NA_INTEGER;
   return std::accumulate(
     x.begin() + 1,
     x.end(),
@@ -46,47 +54,38 @@ int Rscm_(const Rcpp::IntegerVector &x) {
   );
 }
 
-//' @rdname gcd
-//' @export
+template <int (*Op)(int, int)>
+Rcpp::IntegerVector recycle_binary_op(const Rcpp::IntegerVector &m,
+                                      const Rcpp::IntegerVector &n) {
+  if (!m.size() || !n.size())
+    return {};
+
+  R_xlen_t len = std::max(m.size(), n.size());
+  R_xlen_t m_len = m.size(), n_len = n.size();
+  Rcpp::IntegerVector out(len);
+
+  for (R_xlen_t i = 0; i < len; i++) {
+    int a = m[i % m_len], b = n[i % n_len];
+    out[i] = Rcpp::IntegerVector::is_na(a) || Rcpp::IntegerVector::is_na(b)
+                 ? NA_INTEGER
+                 : Op(a, b);
+  }
+
+  return out;
+}
+
 // [[Rcpp::export]]
 Rcpp::IntegerVector gcd(const Rcpp::IntegerVector &m,
                         const Rcpp::IntegerVector &n) {
-  if (!m.size() || !n.size())
-    return {};
-
-  R_xlen_t len = std::max(m.size(), n.size());
-  Rcpp::IntegerVector out(len);
-  auto a = Rcpp::rep_len(m, len);
-  auto b = Rcpp::rep_len(n, len);
-
-  for (R_xlen_t i = 0; i < len; i++)
-    out[i] = gcd_(a[i], b[i]);
-
-  return out;
+  return recycle_binary_op<gcd_>(m, n);
 }
 
-//' @rdname gcd
-//' @aliases lcm
-//' @export
 // [[Rcpp::export]]
 Rcpp::IntegerVector scm(const Rcpp::IntegerVector &m,
                         const Rcpp::IntegerVector &n) {
-  if (!m.size() || !n.size())
-    return {};
-
-  R_xlen_t len = std::max(m.size(), n.size());
-  Rcpp::IntegerVector out(len);
-  auto a = Rcpp::rep_len(m, len);
-  auto b = Rcpp::rep_len(n, len);
-
-  for (R_xlen_t i = 0; i < len; i++)
-    out[i] = scm_(a[i], b[i]);
-
-  return out;
+  return recycle_binary_op<scm_>(m, n);
 }
 
-//' @rdname gcd
-//' @export
 // [[Rcpp::export]]
 Rcpp::LogicalVector coprime(const Rcpp::IntegerVector &m,
                             const Rcpp::IntegerVector &n) {

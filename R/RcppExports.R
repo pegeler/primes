@@ -17,150 +17,54 @@ Rscm_ <- function(x) {
     .Call('_primes_Rscm_', PACKAGE = 'primes', x)
 }
 
-#' @rdname gcd
-#' @export
 gcd <- function(m, n) {
     .Call('_primes_gcd', PACKAGE = 'primes', m, n)
 }
 
-#' @rdname gcd
-#' @aliases lcm
-#' @export
 scm <- function(m, n) {
     .Call('_primes_scm', PACKAGE = 'primes', m, n)
 }
 
-#' @rdname gcd
-#' @export
 coprime <- function(m, n) {
     .Call('_primes_coprime', PACKAGE = 'primes', m, n)
 }
 
-#' @rdname generate_primes
-#' @export
 generate_n_primes <- function(n) {
     .Call('_primes_generate_n_primes', PACKAGE = 'primes', n)
 }
 
-#' Test for Prime Numbers
-#'
-#' Test whether a vector of numbers is prime or composite.
-#'
-#' @param x an integer vector containing elements to be tested for primality.
-#'
-#' @examples
-#' is_prime(4:7)
-#' ## [1] FALSE  TRUE FALSE  TRUE
-#'
-#' is_prime(1299827)
-#' ## [1] TRUE
-#'
-#' @return A logical vector.
-#' @author Os Keyes and Paul Egeler, MS
-#' @export
 is_prime <- function(x) {
     .Call('_primes_is_prime', PACKAGE = 'primes', x)
 }
 
-#' @rdname k_tuple
-#' @export
 k_tuple <- function(min, max, tuple) {
     .Call('_primes_k_tuple', PACKAGE = 'primes', min, max, tuple)
 }
 
-#' @rdname k_tuple
-#' @export
 sexy_prime_triplets <- function(min, max) {
     .Call('_primes_sexy_prime_triplets', PACKAGE = 'primes', min, max)
 }
 
-#' Find the Next and Previous Prime Numbers
-#'
-#' Find the next prime numbers or previous prime numbers over a vector.
-#'
-#' For `prev_prime`, if a value is less than or equal to 2, the function will
-#' return `NA`.
-#'
-#' @param x a vector of integers from which to start the search.
-#'
-#' @examples
-#' next_prime(5)
-#' ## [1] 7
-#'
-#' prev_prime(5:7)
-#' ## [1] 3 5 5
-#' @aliases prev_prime
-#' @return An integer vector of prime numbers.
-#' @author Paul Egeler, MS
-#' @export
 next_prime <- function(x) {
     .Call('_primes_next_prime', PACKAGE = 'primes', x)
 }
 
-#' @rdname next_prime
-#' @export
 prev_prime <- function(x) {
     .Call('_primes_prev_prime', PACKAGE = 'primes', x)
 }
 
-#' Get the n-th Prime from the Sequence of Primes.
-#'
-#' Get the n-th prime, \eqn{p_n}, in the sequence of primes.
-#'
-#' @param x an integer vector.
-#'
-#' @examples
-#' nth_prime(5)
-#' ## [1] 11
-#'
-#' nth_prime(c(1:3, 7))
-#' ## [1]  2  3  5 17
-#' @return An integer vector.
-#' @author Paul Egeler, MS
-#' @export
 nth_prime <- function(x) {
     .Call('_primes_nth_prime', PACKAGE = 'primes', x)
 }
 
-#' @rdname prime_count
-#' @export
 prime_count <- function(n, upper_bound) {
     .Call('_primes_prime_count', PACKAGE = 'primes', n, upper_bound)
 }
 
-#' @rdname prime_count
-#' @export
 nth_prime_estimate <- function(n, upper_bound) {
     .Call('_primes_nth_prime_estimate', PACKAGE = 'primes', n, upper_bound)
 }
 
-#' Perform Prime Factorization on a Vector
-#'
-#' Compute the prime factors of elements of an integer vector.
-#'
-#' @param x an integer vector.
-#'
-#' @examples
-#' prime_factors(c(1, 5:7, 99))
-#' ## [[1]]
-#' ## integer(0)
-#' ##
-#' ## [[2]]
-#' ## [1] 5
-#' ##
-#' ## [[3]]
-#' ## [1] 2 3
-#' ##
-#' ## [[4]]
-#' ## [1] 7
-#' ##
-#' ## [[5]]
-#' ## [1]  3  3 11
-#'
-#' @return A list of integer vectors reflecting the prime factorizations of
-#'   each element of the input vector.
-#' @author Paul Egeler, MS
-#' @export
 prime_factors <- function(x) {
     .Call('_primes_prime_factors', PACKAGE = 'primes', x)
 }
