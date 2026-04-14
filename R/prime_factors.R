@@ -27,5 +27,5 @@
 #' @export
 prime_factors <- function(x) {
   x <- validate_inputs(x)
-  .Call('_primes_prime_factors', PACKAGE = 'primes', x)
+  .Call('_primes_prime_factors_impl', PACKAGE = 'primes', x)
 }

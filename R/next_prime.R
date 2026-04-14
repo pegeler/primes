@@ -19,12 +19,12 @@
 #' @export
 next_prime <- function(x) {
   x <- validate_inputs(x)
-  .Call('_primes_next_prime', PACKAGE = 'primes', x)
+  .Call('_primes_next_prime_impl', PACKAGE = 'primes', x)
 }
 
 #' @rdname next_prime
 #' @export
 prev_prime <- function(x) {
   x <- validate_inputs(x)
-  .Call('_primes_prev_prime', PACKAGE = 'primes', x)
+  .Call('_primes_prev_prime_impl', PACKAGE = 'primes', x)
 }

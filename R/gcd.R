@@ -65,7 +65,7 @@ NULL
 gcd <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
-  .Call('_primes_gcd', PACKAGE = 'primes', m, n)
+  .Call('_primes_gcd_impl', PACKAGE = 'primes', m, n)
 }
 
 #' @rdname gcd
@@ -74,7 +74,7 @@ gcd <- function(m, n) {
 scm <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
-  .Call('_primes_scm', PACKAGE = 'primes', m, n)
+  .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
 }
 
 #' @rdname gcd
@@ -82,7 +82,7 @@ scm <- function(m, n) {
 coprime <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
-  .Call('_primes_coprime', PACKAGE = 'primes', m, n)
+  .Call('_primes_coprime_impl', PACKAGE = 'primes', m, n)
 }
 
 #' @rdname gcd

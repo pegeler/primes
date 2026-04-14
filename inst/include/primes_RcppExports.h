@@ -108,17 +108,17 @@ namespace primes {
         return Rcpp::as<int >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector gcd(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
-        typedef SEXP(*Ptr_gcd)(SEXP,SEXP);
-        static Ptr_gcd p_gcd = NULL;
-        if (p_gcd == NULL) {
-            validateSignature("Rcpp::IntegerVector(*gcd)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
-            p_gcd = (Ptr_gcd)R_GetCCallable("primes", "_primes_gcd");
+    inline Rcpp::IntegerVector gcd_impl(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
+        typedef SEXP(*Ptr_gcd_impl)(SEXP,SEXP);
+        static Ptr_gcd_impl p_gcd_impl = NULL;
+        if (p_gcd_impl == NULL) {
+            validateSignature("Rcpp::IntegerVector(*gcd_impl)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
+            p_gcd_impl = (Ptr_gcd_impl)R_GetCCallable("primes", "_primes_gcd_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_gcd(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
+            rcpp_result_gen = p_gcd_impl(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -129,17 +129,17 @@ namespace primes {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector scm(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
-        typedef SEXP(*Ptr_scm)(SEXP,SEXP);
-        static Ptr_scm p_scm = NULL;
-        if (p_scm == NULL) {
-            validateSignature("Rcpp::IntegerVector(*scm)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
-            p_scm = (Ptr_scm)R_GetCCallable("primes", "_primes_scm");
+    inline Rcpp::IntegerVector scm_impl(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
+        typedef SEXP(*Ptr_scm_impl)(SEXP,SEXP);
+        static Ptr_scm_impl p_scm_impl = NULL;
+        if (p_scm_impl == NULL) {
+            validateSignature("Rcpp::IntegerVector(*scm_impl)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
+            p_scm_impl = (Ptr_scm_impl)R_GetCCallable("primes", "_primes_scm_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_scm(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
+            rcpp_result_gen = p_scm_impl(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -150,17 +150,17 @@ namespace primes {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::LogicalVector coprime(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
-        typedef SEXP(*Ptr_coprime)(SEXP,SEXP);
-        static Ptr_coprime p_coprime = NULL;
-        if (p_coprime == NULL) {
-            validateSignature("Rcpp::LogicalVector(*coprime)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
-            p_coprime = (Ptr_coprime)R_GetCCallable("primes", "_primes_coprime");
+    inline Rcpp::LogicalVector coprime_impl(const Rcpp::IntegerVector& m, const Rcpp::IntegerVector& n) {
+        typedef SEXP(*Ptr_coprime_impl)(SEXP,SEXP);
+        static Ptr_coprime_impl p_coprime_impl = NULL;
+        if (p_coprime_impl == NULL) {
+            validateSignature("Rcpp::LogicalVector(*coprime_impl)(const Rcpp::IntegerVector&,const Rcpp::IntegerVector&)");
+            p_coprime_impl = (Ptr_coprime_impl)R_GetCCallable("primes", "_primes_coprime_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_coprime(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
+            rcpp_result_gen = p_coprime_impl(Shield<SEXP>(Rcpp::wrap(m)), Shield<SEXP>(Rcpp::wrap(n)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -171,17 +171,17 @@ namespace primes {
         return Rcpp::as<Rcpp::LogicalVector >(rcpp_result_gen);
     }
 
-    inline std::vector<int> generate_n_primes(int n) {
-        typedef SEXP(*Ptr_generate_n_primes)(SEXP);
-        static Ptr_generate_n_primes p_generate_n_primes = NULL;
-        if (p_generate_n_primes == NULL) {
-            validateSignature("std::vector<int>(*generate_n_primes)(int)");
-            p_generate_n_primes = (Ptr_generate_n_primes)R_GetCCallable("primes", "_primes_generate_n_primes");
+    inline std::vector<int> generate_n_primes_impl(int n) {
+        typedef SEXP(*Ptr_generate_n_primes_impl)(SEXP);
+        static Ptr_generate_n_primes_impl p_generate_n_primes_impl = NULL;
+        if (p_generate_n_primes_impl == NULL) {
+            validateSignature("std::vector<int>(*generate_n_primes_impl)(int)");
+            p_generate_n_primes_impl = (Ptr_generate_n_primes_impl)R_GetCCallable("primes", "_primes_generate_n_primes_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_generate_n_primes(Shield<SEXP>(Rcpp::wrap(n)));
+            rcpp_result_gen = p_generate_n_primes_impl(Shield<SEXP>(Rcpp::wrap(n)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -192,17 +192,17 @@ namespace primes {
         return Rcpp::as<std::vector<int> >(rcpp_result_gen);
     }
 
-    inline Rcpp::LogicalVector is_prime(const Rcpp::IntegerVector& x) {
-        typedef SEXP(*Ptr_is_prime)(SEXP);
-        static Ptr_is_prime p_is_prime = NULL;
-        if (p_is_prime == NULL) {
-            validateSignature("Rcpp::LogicalVector(*is_prime)(const Rcpp::IntegerVector&)");
-            p_is_prime = (Ptr_is_prime)R_GetCCallable("primes", "_primes_is_prime");
+    inline Rcpp::LogicalVector is_prime_impl(const Rcpp::IntegerVector& x) {
+        typedef SEXP(*Ptr_is_prime_impl)(SEXP);
+        static Ptr_is_prime_impl p_is_prime_impl = NULL;
+        if (p_is_prime_impl == NULL) {
+            validateSignature("Rcpp::LogicalVector(*is_prime_impl)(const Rcpp::IntegerVector&)");
+            p_is_prime_impl = (Ptr_is_prime_impl)R_GetCCallable("primes", "_primes_is_prime_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_is_prime(Shield<SEXP>(Rcpp::wrap(x)));
+            rcpp_result_gen = p_is_prime_impl(Shield<SEXP>(Rcpp::wrap(x)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -213,17 +213,17 @@ namespace primes {
         return Rcpp::as<Rcpp::LogicalVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
-        typedef SEXP(*Ptr_k_tuple)(SEXP,SEXP,SEXP);
-        static Ptr_k_tuple p_k_tuple = NULL;
-        if (p_k_tuple == NULL) {
-            validateSignature("Rcpp::List(*k_tuple)(int,int,std::vector<int>)");
-            p_k_tuple = (Ptr_k_tuple)R_GetCCallable("primes", "_primes_k_tuple");
+    inline Rcpp::List k_tuple_impl(int min, int max, std::vector<int> tuple) {
+        typedef SEXP(*Ptr_k_tuple_impl)(SEXP,SEXP,SEXP);
+        static Ptr_k_tuple_impl p_k_tuple_impl = NULL;
+        if (p_k_tuple_impl == NULL) {
+            validateSignature("Rcpp::List(*k_tuple_impl)(int,int,std::vector<int>)");
+            p_k_tuple_impl = (Ptr_k_tuple_impl)R_GetCCallable("primes", "_primes_k_tuple_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_k_tuple(Shield<SEXP>(Rcpp::wrap(min)), Shield<SEXP>(Rcpp::wrap(max)), Shield<SEXP>(Rcpp::wrap(tuple)));
+            rcpp_result_gen = p_k_tuple_impl(Shield<SEXP>(Rcpp::wrap(min)), Shield<SEXP>(Rcpp::wrap(max)), Shield<SEXP>(Rcpp::wrap(tuple)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -234,17 +234,17 @@ namespace primes {
         return Rcpp::as<Rcpp::List >(rcpp_result_gen);
     }
 
-    inline Rcpp::List sexy_prime_triplets(int min, int max) {
-        typedef SEXP(*Ptr_sexy_prime_triplets)(SEXP,SEXP);
-        static Ptr_sexy_prime_triplets p_sexy_prime_triplets = NULL;
-        if (p_sexy_prime_triplets == NULL) {
-            validateSignature("Rcpp::List(*sexy_prime_triplets)(int,int)");
-            p_sexy_prime_triplets = (Ptr_sexy_prime_triplets)R_GetCCallable("primes", "_primes_sexy_prime_triplets");
+    inline Rcpp::List sexy_prime_triplets_impl(int min, int max) {
+        typedef SEXP(*Ptr_sexy_prime_triplets_impl)(SEXP,SEXP);
+        static Ptr_sexy_prime_triplets_impl p_sexy_prime_triplets_impl = NULL;
+        if (p_sexy_prime_triplets_impl == NULL) {
+            validateSignature("Rcpp::List(*sexy_prime_triplets_impl)(int,int)");
+            p_sexy_prime_triplets_impl = (Ptr_sexy_prime_triplets_impl)R_GetCCallable("primes", "_primes_sexy_prime_triplets_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_sexy_prime_triplets(Shield<SEXP>(Rcpp::wrap(min)), Shield<SEXP>(Rcpp::wrap(max)));
+            rcpp_result_gen = p_sexy_prime_triplets_impl(Shield<SEXP>(Rcpp::wrap(min)), Shield<SEXP>(Rcpp::wrap(max)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -255,17 +255,17 @@ namespace primes {
         return Rcpp::as<Rcpp::List >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector next_prime(const Rcpp::IntegerVector& x) {
-        typedef SEXP(*Ptr_next_prime)(SEXP);
-        static Ptr_next_prime p_next_prime = NULL;
-        if (p_next_prime == NULL) {
-            validateSignature("Rcpp::IntegerVector(*next_prime)(const Rcpp::IntegerVector&)");
-            p_next_prime = (Ptr_next_prime)R_GetCCallable("primes", "_primes_next_prime");
+    inline Rcpp::IntegerVector next_prime_impl(const Rcpp::IntegerVector& x) {
+        typedef SEXP(*Ptr_next_prime_impl)(SEXP);
+        static Ptr_next_prime_impl p_next_prime_impl = NULL;
+        if (p_next_prime_impl == NULL) {
+            validateSignature("Rcpp::IntegerVector(*next_prime_impl)(const Rcpp::IntegerVector&)");
+            p_next_prime_impl = (Ptr_next_prime_impl)R_GetCCallable("primes", "_primes_next_prime_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_next_prime(Shield<SEXP>(Rcpp::wrap(x)));
+            rcpp_result_gen = p_next_prime_impl(Shield<SEXP>(Rcpp::wrap(x)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -276,17 +276,17 @@ namespace primes {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector prev_prime(const Rcpp::IntegerVector& x) {
-        typedef SEXP(*Ptr_prev_prime)(SEXP);
-        static Ptr_prev_prime p_prev_prime = NULL;
-        if (p_prev_prime == NULL) {
-            validateSignature("Rcpp::IntegerVector(*prev_prime)(const Rcpp::IntegerVector&)");
-            p_prev_prime = (Ptr_prev_prime)R_GetCCallable("primes", "_primes_prev_prime");
+    inline Rcpp::IntegerVector prev_prime_impl(const Rcpp::IntegerVector& x) {
+        typedef SEXP(*Ptr_prev_prime_impl)(SEXP);
+        static Ptr_prev_prime_impl p_prev_prime_impl = NULL;
+        if (p_prev_prime_impl == NULL) {
+            validateSignature("Rcpp::IntegerVector(*prev_prime_impl)(const Rcpp::IntegerVector&)");
+            p_prev_prime_impl = (Ptr_prev_prime_impl)R_GetCCallable("primes", "_primes_prev_prime_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_prev_prime(Shield<SEXP>(Rcpp::wrap(x)));
+            rcpp_result_gen = p_prev_prime_impl(Shield<SEXP>(Rcpp::wrap(x)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -297,17 +297,17 @@ namespace primes {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline Rcpp::IntegerVector nth_prime(const Rcpp::IntegerVector& x) {
-        typedef SEXP(*Ptr_nth_prime)(SEXP);
-        static Ptr_nth_prime p_nth_prime = NULL;
-        if (p_nth_prime == NULL) {
-            validateSignature("Rcpp::IntegerVector(*nth_prime)(const Rcpp::IntegerVector&)");
-            p_nth_prime = (Ptr_nth_prime)R_GetCCallable("primes", "_primes_nth_prime");
+    inline Rcpp::IntegerVector nth_prime_impl(const Rcpp::IntegerVector& x) {
+        typedef SEXP(*Ptr_nth_prime_impl)(SEXP);
+        static Ptr_nth_prime_impl p_nth_prime_impl = NULL;
+        if (p_nth_prime_impl == NULL) {
+            validateSignature("Rcpp::IntegerVector(*nth_prime_impl)(const Rcpp::IntegerVector&)");
+            p_nth_prime_impl = (Ptr_nth_prime_impl)R_GetCCallable("primes", "_primes_nth_prime_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_nth_prime(Shield<SEXP>(Rcpp::wrap(x)));
+            rcpp_result_gen = p_nth_prime_impl(Shield<SEXP>(Rcpp::wrap(x)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -318,17 +318,17 @@ namespace primes {
         return Rcpp::as<Rcpp::IntegerVector >(rcpp_result_gen);
     }
 
-    inline int prime_count(int n, bool upper_bound) {
-        typedef SEXP(*Ptr_prime_count)(SEXP,SEXP);
-        static Ptr_prime_count p_prime_count = NULL;
-        if (p_prime_count == NULL) {
-            validateSignature("int(*prime_count)(int,bool)");
-            p_prime_count = (Ptr_prime_count)R_GetCCallable("primes", "_primes_prime_count");
+    inline int prime_count_impl(int n, bool upper_bound) {
+        typedef SEXP(*Ptr_prime_count_impl)(SEXP,SEXP);
+        static Ptr_prime_count_impl p_prime_count_impl = NULL;
+        if (p_prime_count_impl == NULL) {
+            validateSignature("int(*prime_count_impl)(int,bool)");
+            p_prime_count_impl = (Ptr_prime_count_impl)R_GetCCallable("primes", "_primes_prime_count_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_prime_count(Shield<SEXP>(Rcpp::wrap(n)), Shield<SEXP>(Rcpp::wrap(upper_bound)));
+            rcpp_result_gen = p_prime_count_impl(Shield<SEXP>(Rcpp::wrap(n)), Shield<SEXP>(Rcpp::wrap(upper_bound)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -339,17 +339,17 @@ namespace primes {
         return Rcpp::as<int >(rcpp_result_gen);
     }
 
-    inline int nth_prime_estimate(int n, bool upper_bound) {
-        typedef SEXP(*Ptr_nth_prime_estimate)(SEXP,SEXP);
-        static Ptr_nth_prime_estimate p_nth_prime_estimate = NULL;
-        if (p_nth_prime_estimate == NULL) {
-            validateSignature("int(*nth_prime_estimate)(int,bool)");
-            p_nth_prime_estimate = (Ptr_nth_prime_estimate)R_GetCCallable("primes", "_primes_nth_prime_estimate");
+    inline int nth_prime_estimate_impl(int n, bool upper_bound) {
+        typedef SEXP(*Ptr_nth_prime_estimate_impl)(SEXP,SEXP);
+        static Ptr_nth_prime_estimate_impl p_nth_prime_estimate_impl = NULL;
+        if (p_nth_prime_estimate_impl == NULL) {
+            validateSignature("int(*nth_prime_estimate_impl)(int,bool)");
+            p_nth_prime_estimate_impl = (Ptr_nth_prime_estimate_impl)R_GetCCallable("primes", "_primes_nth_prime_estimate_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_nth_prime_estimate(Shield<SEXP>(Rcpp::wrap(n)), Shield<SEXP>(Rcpp::wrap(upper_bound)));
+            rcpp_result_gen = p_nth_prime_estimate_impl(Shield<SEXP>(Rcpp::wrap(n)), Shield<SEXP>(Rcpp::wrap(upper_bound)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();
@@ -360,17 +360,17 @@ namespace primes {
         return Rcpp::as<int >(rcpp_result_gen);
     }
 
-    inline Rcpp::List prime_factors(const Rcpp::IntegerVector& x) {
-        typedef SEXP(*Ptr_prime_factors)(SEXP);
-        static Ptr_prime_factors p_prime_factors = NULL;
-        if (p_prime_factors == NULL) {
-            validateSignature("Rcpp::List(*prime_factors)(const Rcpp::IntegerVector&)");
-            p_prime_factors = (Ptr_prime_factors)R_GetCCallable("primes", "_primes_prime_factors");
+    inline Rcpp::List prime_factors_impl(const Rcpp::IntegerVector& x) {
+        typedef SEXP(*Ptr_prime_factors_impl)(SEXP);
+        static Ptr_prime_factors_impl p_prime_factors_impl = NULL;
+        if (p_prime_factors_impl == NULL) {
+            validateSignature("Rcpp::List(*prime_factors_impl)(const Rcpp::IntegerVector&)");
+            p_prime_factors_impl = (Ptr_prime_factors_impl)R_GetCCallable("primes", "_primes_prime_factors_impl");
         }
         RObject rcpp_result_gen;
         {
             RNGScope RCPP_rngScope_gen;
-            rcpp_result_gen = p_prime_factors(Shield<SEXP>(Rcpp::wrap(x)));
+            rcpp_result_gen = p_prime_factors_impl(Shield<SEXP>(Rcpp::wrap(x)));
         }
         if (rcpp_result_gen.inherits("interrupted-error"))
             throw Rcpp::internal::InterruptedException();

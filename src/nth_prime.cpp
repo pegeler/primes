@@ -6,11 +6,11 @@
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector nth_prime(const Rcpp::IntegerVector &x) {
+Rcpp::IntegerVector nth_prime_impl(const Rcpp::IntegerVector &x) {
   if (!x.size())
     return {};
 
-  auto primes = generate_n_primes(*std::max_element(x.begin(), x.end()));
+  auto primes = generate_n_primes_impl(*std::max_element(x.begin(), x.end()));
   auto out = Rcpp::IntegerVector(x.size());
   auto it = out.begin();
 

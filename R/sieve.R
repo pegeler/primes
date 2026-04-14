@@ -26,5 +26,5 @@ generate_primes <- function(min = 2L, max){
 #' @export
 generate_n_primes <- function(n) {
   n <- validate_inputs(n, scalar = TRUE)
-  .Call('_primes_generate_n_primes', PACKAGE = 'primes', n)
+  .Call('_primes_generate_n_primes_impl', PACKAGE = 'primes', n)
 }

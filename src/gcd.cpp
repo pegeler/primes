@@ -75,19 +75,25 @@ Rcpp::IntegerVector recycle_binary_op(const Rcpp::IntegerVector &m,
 }
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector gcd(const Rcpp::IntegerVector &m,
-                        const Rcpp::IntegerVector &n) {
+Rcpp::IntegerVector gcd_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
   return recycle_binary_op<gcd_>(m, n);
 }
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector scm(const Rcpp::IntegerVector &m,
-                        const Rcpp::IntegerVector &n) {
+Rcpp::IntegerVector scm_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
   return recycle_binary_op<scm_>(m, n);
 }
 
 // [[Rcpp::export]]
-Rcpp::LogicalVector coprime(const Rcpp::IntegerVector &m,
-                            const Rcpp::IntegerVector &n) {
-  return gcd(m, n) == 1;
+Rcpp::LogicalVector coprime_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
+  return gcd_impl(m, n) == 1;
 }

@@ -6,11 +6,11 @@
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-std::vector<int> generate_n_primes(int n) {
+std::vector<int> generate_n_primes_impl(int n) {
   if (n < 1)
     return {};
 
-  int max = n >= 6 ? nth_prime_estimate(n, true) : 11;
+  int max = n >= 6 ? nth_prime_estimate_impl(n, true) : 11;
   auto out = generate_primes_(2, max);
   out.resize(n);
   return out;

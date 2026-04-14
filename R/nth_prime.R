@@ -15,5 +15,5 @@
 #' @export
 nth_prime <- function(x) {
   x <- validate_inputs(x)
-  .Call('_primes_nth_prime', PACKAGE = 'primes', x)
+  .Call('_primes_nth_prime_impl', PACKAGE = 'primes', x)
 }

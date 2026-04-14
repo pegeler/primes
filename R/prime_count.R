@@ -28,12 +28,12 @@ NULL
 #' @export
 prime_count <- function(n, upper_bound) {
   n <- validate_inputs(n, scalar = TRUE, positive = TRUE)
-  .Call('_primes_prime_count', PACKAGE = 'primes', n, upper_bound)
+  .Call('_primes_prime_count_impl', PACKAGE = 'primes', n, upper_bound)
 }
 
 #' @rdname prime_count
 #' @export
 nth_prime_estimate <- function(n, upper_bound) {
   n <- validate_inputs(n, scalar = TRUE, positive = TRUE)
-  .Call('_primes_nth_prime_estimate', PACKAGE = 'primes', n, upper_bound)
+  .Call('_primes_nth_prime_estimate_impl', PACKAGE = 'primes', n, upper_bound)
 }

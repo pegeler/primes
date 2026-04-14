@@ -27,7 +27,7 @@ match_tuple(std::vector<int>::iterator first,
 }
 
 // [[Rcpp::export]]
-Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
+Rcpp::List k_tuple_impl(int min, int max, std::vector<int> tuple) {
   Rcpp::List out;
   auto primes = generate_primes_(min, max);
 
@@ -52,7 +52,7 @@ Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
 
 // Because sexy prime triplets stipulate that p + 18 is composite...
 // [[Rcpp::export]]
-Rcpp::List sexy_prime_triplets(int min, int max) {
+Rcpp::List sexy_prime_triplets_impl(int min, int max) {
   Rcpp::List out;
   auto primes = generate_primes_(min, max + 6);
   std::vector<int> tuple = {0, 6, 12};

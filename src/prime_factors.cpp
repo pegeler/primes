@@ -31,7 +31,7 @@ static Rcpp::IntegerVector prime_factors_(int n, const std::vector<int> &primes)
 }
 
 // [[Rcpp::export]]
-Rcpp::List prime_factors(const Rcpp::IntegerVector &x) {
+Rcpp::List prime_factors_impl(const Rcpp::IntegerVector &x) {
   if (!x.size())
     return {};
 

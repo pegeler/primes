@@ -17,56 +17,56 @@ Rscm_ <- function(x) {
     .Call('_primes_Rscm_', PACKAGE = 'primes', x)
 }
 
-gcd <- function(m, n) {
-    .Call('_primes_gcd', PACKAGE = 'primes', m, n)
+gcd_impl <- function(m, n) {
+    .Call('_primes_gcd_impl', PACKAGE = 'primes', m, n)
 }
 
-scm <- function(m, n) {
-    .Call('_primes_scm', PACKAGE = 'primes', m, n)
+scm_impl <- function(m, n) {
+    .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
 }
 
-coprime <- function(m, n) {
-    .Call('_primes_coprime', PACKAGE = 'primes', m, n)
+coprime_impl <- function(m, n) {
+    .Call('_primes_coprime_impl', PACKAGE = 'primes', m, n)
 }
 
-generate_n_primes <- function(n) {
-    .Call('_primes_generate_n_primes', PACKAGE = 'primes', n)
+generate_n_primes_impl <- function(n) {
+    .Call('_primes_generate_n_primes_impl', PACKAGE = 'primes', n)
 }
 
-is_prime <- function(x) {
-    .Call('_primes_is_prime', PACKAGE = 'primes', x)
+is_prime_impl <- function(x) {
+    .Call('_primes_is_prime_impl', PACKAGE = 'primes', x)
 }
 
-k_tuple <- function(min, max, tuple) {
-    .Call('_primes_k_tuple', PACKAGE = 'primes', min, max, tuple)
+k_tuple_impl <- function(min, max, tuple) {
+    .Call('_primes_k_tuple_impl', PACKAGE = 'primes', min, max, tuple)
 }
 
-sexy_prime_triplets <- function(min, max) {
-    .Call('_primes_sexy_prime_triplets', PACKAGE = 'primes', min, max)
+sexy_prime_triplets_impl <- function(min, max) {
+    .Call('_primes_sexy_prime_triplets_impl', PACKAGE = 'primes', min, max)
 }
 
-next_prime <- function(x) {
-    .Call('_primes_next_prime', PACKAGE = 'primes', x)
+next_prime_impl <- function(x) {
+    .Call('_primes_next_prime_impl', PACKAGE = 'primes', x)
 }
 
-prev_prime <- function(x) {
-    .Call('_primes_prev_prime', PACKAGE = 'primes', x)
+prev_prime_impl <- function(x) {
+    .Call('_primes_prev_prime_impl', PACKAGE = 'primes', x)
 }
 
-nth_prime <- function(x) {
-    .Call('_primes_nth_prime', PACKAGE = 'primes', x)
+nth_prime_impl <- function(x) {
+    .Call('_primes_nth_prime_impl', PACKAGE = 'primes', x)
 }
 
-prime_count <- function(n, upper_bound) {
-    .Call('_primes_prime_count', PACKAGE = 'primes', n, upper_bound)
+prime_count_impl <- function(n, upper_bound) {
+    .Call('_primes_prime_count_impl', PACKAGE = 'primes', n, upper_bound)
 }
 
-nth_prime_estimate <- function(n, upper_bound) {
-    .Call('_primes_nth_prime_estimate', PACKAGE = 'primes', n, upper_bound)
+nth_prime_estimate_impl <- function(n, upper_bound) {
+    .Call('_primes_nth_prime_estimate_impl', PACKAGE = 'primes', n, upper_bound)
 }
 
-prime_factors <- function(x) {
-    .Call('_primes_prime_factors', PACKAGE = 'primes', x)
+prime_factors_impl <- function(x) {
+    .Call('_primes_prime_factors_impl', PACKAGE = 'primes', x)
 }
 
 generate_primes_ <- function(min, max) {

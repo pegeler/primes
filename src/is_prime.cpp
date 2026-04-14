@@ -19,7 +19,7 @@ bool is_prime_(int x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::LogicalVector is_prime(const Rcpp::IntegerVector &x) {
+Rcpp::LogicalVector is_prime_impl(const Rcpp::IntegerVector &x) {
 
   R_xlen_t len = x.size();
   Rcpp::LogicalVector out(len);

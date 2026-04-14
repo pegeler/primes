@@ -12,7 +12,7 @@ static inline int num2index(int x) { return (x - 3) / 2; }
 static inline int index2num(int x) { return (x * 2) + 3; }
 
 static inline int estimate_output_size(int min, int max) {
-  return std::max(100, prime_count(max, true) - prime_count(min, false));
+  return std::max(100, prime_count_impl(max, true) - prime_count_impl(min, false));
 }
 
 // [[Rcpp::export]]

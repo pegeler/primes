@@ -55,7 +55,7 @@ k_tuple <- function(min, max, tuple) {
   min <- validate_inputs(min, scalar = TRUE)
   max <- validate_inputs(max, scalar = TRUE)
   tuple <- validate_inputs(tuple)
-  .Call('_primes_k_tuple', PACKAGE = 'primes', min, max, tuple)
+  .Call('_primes_k_tuple_impl', PACKAGE = 'primes', min, max, tuple)
 }
 
 #' @rdname k_tuple
@@ -63,7 +63,7 @@ k_tuple <- function(min, max, tuple) {
 sexy_prime_triplets <- function(min, max) {
   min <- validate_inputs(min, scalar = TRUE)
   max <- validate_inputs(max, scalar = TRUE)
-  .Call('_primes_sexy_prime_triplets', PACKAGE = 'primes', min, max)
+  .Call('_primes_sexy_prime_triplets_impl', PACKAGE = 'primes', min, max)
 }
 
 #' @rdname k_tuple

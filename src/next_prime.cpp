@@ -5,7 +5,7 @@
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector next_prime(const Rcpp::IntegerVector &x) {
+Rcpp::IntegerVector next_prime_impl(const Rcpp::IntegerVector &x) {
 
   Rcpp::IntegerVector out(x.size());
   auto it = out.begin();
@@ -24,7 +24,7 @@ Rcpp::IntegerVector next_prime(const Rcpp::IntegerVector &x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector prev_prime(const Rcpp::IntegerVector &x) {
+Rcpp::IntegerVector prev_prime_impl(const Rcpp::IntegerVector &x) {
 
   Rcpp::IntegerVector out(x.size());
   auto it = out.begin();
