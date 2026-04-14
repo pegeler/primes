@@ -8,8 +8,9 @@
 #' @section Performance:
 #' Prime generation uses an optimized Sieve of Eratosthenes. GCD computation
 #' uses Euclid's algorithm. Input validation uses S3 method dispatch so that
-#' \code{integer} inputs incur zero R-level overhead---they are passed
-#' directly to the C++ backend without any validation or coercion.
+#' \code{integer} inputs incur minimal R-level overhead---they are passed
+#' directly to the C++ backend, with only scalar and positivity checks when
+#' necessary.
 #'
 #' @section Input handling:
 #' All functions expect integer input. When \code{double} (numeric) values
@@ -21,9 +22,6 @@
 #'   \item Infinite values (\code{Inf}, \code{-Inf}) raise an error.
 #'   \item Non-whole numbers (e.g., \code{5.3}) are truncated with a warning.
 #' }
-#'
-#' Integer inputs bypass all type-coercion checks and are passed directly to
-#' the C++ backend.
 #'
 #' @section NA handling:
 #' \code{NA} values in vector inputs are propagated element-wise---functions
@@ -56,7 +54,7 @@
 #' @section Disabling validation:
 #' Type-coercion validation for \code{double} inputs can be turned off by
 #' setting \code{options(primes.validate_inputs = FALSE)}. When disabled,
-#' \code{double} inputs are silently coerced via \code{as.integer()} without
+#' \code{double} inputs are coerced via \code{as.integer()} without
 #' range or finiteness checks. Scalar, \code{NA}, and positivity checks still
 #' apply regardless of this setting.
 #'

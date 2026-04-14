@@ -1,11 +1,11 @@
 # primes 2.0.0
 
-## **Breaking changes**
+## Breaking changes
 
 * `is_prime()` now returns `NA` (instead of `FALSE`) for non-natural numbers
   (negative integers and zero). Primality is defined only for natural numbers, so
   inputs outside this domain are now treated as undefined rather than "not prime."
-  _e.g._, Code that previously relied on `is_prime(-5L)` returning `FALSE` will
+  _e.g._, code that previously relied on `is_prime(-5L)` returning `FALSE` will
   need to be updated to `is_prime(-5L) %in% TRUE` to convert the `NA`s back to
   `FALSE`. Caller may also filter inputs beforehand with `x[x >= 1L]`.
 

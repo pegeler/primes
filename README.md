@@ -110,8 +110,7 @@ Input validation for `double` inputs can be turned off globally by setting:
 options(primes.validate_inputs = FALSE)
 ```
 
-When disabled, `double` inputs are silently coerced via `as.integer()`
-without any range or finiteness checks. This is not recommended for
-interactive use but may be useful for performance-sensitive code where inputs
-are known to be safe. Note that scalar, `NA`, and positivity checks still
-apply regardless of this setting.
+When disabled, `double` inputs are coerced via `as.integer()` without any range
+or finiteness checks. This is not recommended for interactive use but may be
+useful for performance-sensitive code where inputs are known to be safe. Note
+that scalar, `NA`, and positivity checks still apply regardless of this setting.
