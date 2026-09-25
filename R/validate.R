@@ -39,3 +39,10 @@ validate_inputs.double <- function(x, scalar = FALSE, positive = FALSE, ...) {
 validate_inputs.default <- function(x, ...) {
   stop("input must be numeric")
 }
+
+validate_flag <- function(x, name) {
+  if (!is.logical(x) || length(x) != 1L || is.na(x))
+    stop(sprintf("'%s' must be TRUE or FALSE", name))
+
+  x
+}

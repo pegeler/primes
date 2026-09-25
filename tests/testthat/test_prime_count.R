@@ -23,3 +23,10 @@ test_that("negative input is rejected", {
   expect_error(nth_prime_estimate(-5L, TRUE), "must be positive")
   expect_error(nth_prime_estimate(0L, TRUE), "must be positive")
 })
+
+test_that("upper_bound must be TRUE or FALSE", {
+  for (bad in list(NA, "a", 1L, c(TRUE, FALSE), NULL)) {
+    expect_error(prime_count(100L, bad), "must be TRUE or FALSE")
+    expect_error(nth_prime_estimate(100L, bad), "must be TRUE or FALSE")
+  }
+})

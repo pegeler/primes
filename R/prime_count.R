@@ -28,6 +28,7 @@ NULL
 #' @export
 prime_count <- function(n, upper_bound) {
   n <- validate_inputs(n, scalar = TRUE, positive = TRUE)
+  upper_bound <- validate_flag(upper_bound, "upper_bound")
   .Call('_primes_prime_count_impl', PACKAGE = 'primes', n, upper_bound)
 }
 
@@ -35,5 +36,6 @@ prime_count <- function(n, upper_bound) {
 #' @export
 nth_prime_estimate <- function(n, upper_bound) {
   n <- validate_inputs(n, scalar = TRUE, positive = TRUE)
+  upper_bound <- validate_flag(upper_bound, "upper_bound")
   .Call('_primes_nth_prime_estimate_impl', PACKAGE = 'primes', n, upper_bound)
 }
