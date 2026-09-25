@@ -9,6 +9,12 @@
   need to be updated to `is_prime(-5L) %in% TRUE` to convert the `NA`s back to
   `FALSE`. Caller may also filter inputs beforehand with `x[x >= 1L]`.
 
+* The C++ interface exported for use via `LinkingTo: primes` has been renamed.
+  The exported C++ functions now carry an `_impl` suffix (_e.g._,
+  `primes::gcd()` is now `primes::gcd_impl()`, `primes::is_prime()` is now
+  `primes::is_prime_impl()`). Packages that call these from C++ must update
+  their calls. Note that the `_impl` functions do no input validation.
+
 ## New features
 
 * **Input validation with S3 dispatch.** All exported functions now validate
@@ -28,7 +34,13 @@
 
 * **Improved NA propagation.** `next_prime()`, `prev_prime()`, `gcd()`,
   `scm()`, and `coprime()` now correctly propagate `NA` values element-wise
-  instead of producing undefined results.
+  instead of producing undefined results. `NA` is an error where a value is
+  required: scalar arguments, the `tuple` argument of `k_tuple()`, and
+  `upper_bound`, which must be `TRUE` or `FALSE`.
+
+* `logical` input (including a bare `NA`) is now an error, since it is not a
+  number. Use `NA_integer_` to pass a missing value, _e.g._,
+  `is_prime(NA_integer_)`.
 
 * **Negative number handling.** Functions that require strictly positive input
   (`phi()`, `prime_count()`, `nth_prime_estimate()`) now raise informative

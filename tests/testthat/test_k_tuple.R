@@ -10,6 +10,11 @@ test_that("double input is validated for k_tuple", {
   expect_error(sexy_prime_triplets(3e9, 4e9))
 })
 
+test_that("NA in tuple is rejected", {
+  expect_error(k_tuple(2L, 19L, NA), "input must be numeric")
+  expect_error(k_tuple(2L, 19L, c(0L, NA)), "must not contain NA")
+})
+
 test_that("Prime triplets are correct", {
   expect_equal(k_tuple(2,19,c(0,2,6)), list(c(5L,7L,11L), c(11L,13L,17L)))
 })

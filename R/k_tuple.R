@@ -55,6 +55,8 @@ k_tuple <- function(min, max, tuple) {
   min <- validate_inputs(min, scalar = TRUE)
   max <- validate_inputs(max, scalar = TRUE)
   tuple <- validate_inputs(tuple)
+  if (anyNA(tuple))
+    stop("'tuple' must not contain NA")
   .Call('_primes_k_tuple_impl', PACKAGE = 'primes', min, max, tuple)
 }
 
