@@ -9,15 +9,34 @@ behavior, and how to update it.
 
 ### Most likely to affect existing code
 
-| Pattern | 1.x | 2.0 | Fix |
-|---|---|---|---|
-| `sum(is_prime(x))` with any `x <= 0` | counts primes | `NA` | `sum(is_prime(x), na.rm = TRUE)` |
-| `x[is_prime(x)]` with any `x <= 0` | primes only | `NA` rows included | `x[which(is_prime(x))]` |
-| `if (is_prime(x))` or `&&` with `x <= 0` | `FALSE` | error (`NA` condition) | guard with `x >= 1`, or use `is_prime(x) %in% TRUE` |
-| Fractional doubles, _e.g._, `is_prime(0.29 * 100)` | silently truncates 28.999... to 28 | same value, plus a warning | `round()` before the call |
-| Doubles above 2^31 - 1, or `Inf` | `NA` or garbage, with a warning | error | filter or rescale the inputs |
-| `factor`, `Date`, `difftime`, or `POSIXct` input | computed on the underlying number (for a factor, its integer codes) | error | `as.integer()`, if that is what was meant |
-| `logical` input, including an all-`NA` column (_e.g._, from `read.csv()`) | coerced to integer | error | `as.integer()` |
+* `sum(is_prime(x))` with any `x <= 0`
+    - 1.x: counts the primes.
+    - 2.0: returns `NA`.
+    - Fix: `sum(is_prime(x), na.rm = TRUE)`.
+* `x[is_prime(x)]` with any `x <= 0`
+    - 1.x: returns only the primes.
+    - 2.0: includes an `NA` row for each non-natural number.
+    - Fix: `x[which(is_prime(x))]`.
+* `if (is_prime(x))` or `&&` with `x <= 0`
+    - 1.x: `FALSE`.
+    - 2.0: error, because the condition is `NA`.
+    - Fix: guard with `x >= 1`, or use `is_prime(x) %in% TRUE`.
+* Fractional doubles, _e.g._, `is_prime(0.29 * 100)`
+    - 1.x: silently truncates 28.999... to 28.
+    - 2.0: same value, plus a warning.
+    - Fix: `round()` before the call.
+* Doubles above 2^31 - 1, or `Inf`
+    - 1.x: `NA` or garbage, with a warning.
+    - 2.0: error.
+    - Fix: filter or rescale the inputs.
+* `factor`, `Date`, `difftime`, or `POSIXct` input
+    - 1.x: computed on the underlying number (for a factor, its integer codes).
+    - 2.0: error.
+    - Fix: `as.integer()`, if that is what was meant.
+* `logical` input, including an all-`NA` column (_e.g._, from `read.csv()`)
+    - 1.x: coerced to integer.
+    - 2.0: error.
+    - Fix: `as.integer()`.
 
 `which(is_prime(x))` is unaffected. Only code that treated `FALSE` as a real
 answer for non-natural numbers breaks, because primality is only defined for
