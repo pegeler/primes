@@ -17,29 +17,29 @@
 
 ## New features
 
-* **Input validation with S3 dispatch.** All exported functions now validate
-  `double` (numeric) inputs before passing them to the C++ backend:
-    - Values exceeding the 32-bit integer range (+/- 2,147,483,647) raise an
+* **Input validation.** All exported functions now check `double` (numeric)
+  inputs before they are converted to integers. Previously, these problems
+  silently produced wrong results:
+    - Values outside the 32-bit integer range (+/- 2,147,483,647) raise an
       error instead of being silently converted to `NA`.
     - Infinite values (`Inf`, `-Inf`) raise an error.
-    - Non-whole numbers (e.g., `5.3`) are truncated with a warning.
+    - Non-whole numbers (e.g., `5.3`) are truncated toward zero with a warning.
 
-  Integer inputs bypass all type-coercion checks via S3 method dispatch and are
-  passed directly to C++ with zero R-level overhead.
+  Inputs that are already integers skip these checks.
 
-* **`primes.validate_inputs` option.** Type-coercion validation for `double`
-  inputs can be disabled globally with `options(primes.validate_inputs = FALSE)`
-  for performance-sensitive code where inputs are known to be safe. Scalar, `NA`,
-  and positivity checks still apply regardless of this setting.
+* **`primes.validate_inputs` option.** The checks on `double` inputs can be
+  turned off for the whole session with
+  `options(primes.validate_inputs = FALSE)`, for long-running code whose inputs
+  are known to be valid. Checks for `NA` and for positivity still apply.
 
-* **Improved NA propagation.** `next_prime()`, `prev_prime()`, `gcd()`,
-  `scm()`, and `coprime()` now correctly propagate `NA` values element-wise
-  instead of producing undefined results. `NA` is an error where a value is
-  required: scalar arguments, the `tuple` argument of `k_tuple()`, and
-  `upper_bound`, which must be `TRUE` or `FALSE`.
+* **`NA` propagation.** `next_prime()`, `prev_prime()`, `gcd()`, `scm()`, and
+  `coprime()` now return `NA` in the matching position for each `NA` in the
+  input, as `is_prime()` does. `NA` is an error where a value is required:
+  scalar arguments, the `tuple` argument of `k_tuple()`, and `upper_bound` in
+  `prime_count()` and `nth_prime_estimate()`, which must be `TRUE` or `FALSE`.
 
-* `logical` input (including a bare `NA`) is now an error, since it is not a
-  number. Use `NA_integer_` to pass a missing value, _e.g._,
+* **`logical` input is an error.** This includes a bare `NA`, which R types as
+  `logical`. Use `NA_integer_` to pass a missing value, _e.g._,
   `is_prime(NA_integer_)`.
 
 * **Negative number handling.** Functions that require strictly positive input
@@ -48,13 +48,29 @@
   mathematically valid (`gcd()`, `scm()`, `coprime()`, `next_prime()`,
   `prev_prime()`) continue to accept them.
 
-* Added package-level documentation (`?primes`) covering input handling,
-  NA behavior, negative numbers, performance, and the validation option.
+* Added package-level documentation (`?primes`) covering input handling, `NA`
+  behavior, negative numbers, performance, and the validation option.
 
-## Internal
+## Technical notes
+
+* **Validation is an S3 generic.** Each exported R function calls
+  `validate_inputs()`, which dispatches on the input's type. The `integer`
+  method only enforces the scalar and positivity constraints, so integer inputs
+  reach the C++ code with negligible R-level overhead. The `double` method
+  checks for `Inf`, truncates, checks the 32-bit range on the truncated value
+  (matching what `as.integer()` does), warns if truncation changed anything,
+  and then hands the result to the `integer` method. Every other type,
+  including `logical`, falls through to the `default` method and is an error.
+
+* **Symmetric range.** The valid range is +/- 2,147,483,647, not the full
+  32-bit range, because `-2147483648` is `NA_integer_` in R.
+
+* **Exported functions are now thin R wrappers.** The compiled routines were
+  renamed with an `_impl` suffix and are called from the R wrappers, which
+  perform the validation. Roxygen documentation moved from the C++ sources to
+  the R wrapper files accordingly.
 
 * Vectorized binary operations in `gcd()` and `scm()` now share a common C++
-  template (`recycle_binary_op`) with modulo-based vector recycling, replacing
-  duplicated loop code and the previous `Rcpp::rep_len` approach.
-
-* Roxygen documentation moved from C++ source files to R wrapper files.
+  template (`recycle_binary_op`) with modulo-based index recycling, replacing
+  duplicated loop code and the previous `Rcpp::rep_len` approach. It also
+  handles `NA` propagation in one place.

@@ -62,55 +62,61 @@ generate_primes(101, 199)
 
 ## Input Handling
 
-All functions in `primes` expect integer input. Because R's default numeric
-type is `double`, the package validates inputs and converts them to integers
-automatically. The following checks are performed on `double` inputs:
+The functions in `primes` work on 32-bit integers. R's default numeric type is
+`double`, so a call like `is_prime(7)` is fine; the value is checked and
+converted to an integer before it is used. A `double` input is handled as
+follows:
 
-- **Values exceeding 32-bit integer range** (larger than
-  &plusmn;2,147,483,647) raise an error.
+- **Values outside the 32-bit integer range** (beyond &plusmn;2,147,483,647)
+  raise an error, rather than silently becoming `NA`.
 - **Infinite values** (`Inf`, `-Inf`) raise an error.
-- **Non-whole numbers** (e.g., `5.3`) are truncated to integers with a
-  warning.
+- **Values that are not whole numbers** (e.g., `5.3`) are truncated toward zero
+  (to `5`) with a warning.
 
-Integer inputs bypass the above checks and are passed directly to the C++
-backend.
+Inputs that are already integers (e.g., `5L` or `1:10`) skip these checks.
+Only numbers are accepted: `logical` input, including a bare `NA`, is an error.
+Use `NA_integer_` to pass a missing value.
 
 ### `NA` Handling
 
-`NA` values are passed through and handled element-wise. Functions like
-`is_prime`, `next_prime`, `gcd`, etc. will return `NA` in the corresponding
-position. Functions that take scalar arguments (e.g., `generate_n_primes`,
-`prime_count`) will error on `NA`.
+Missing values in a vector are propagated element-wise. For example,
+`is_prime(c(7L, NA, 9L))` returns `TRUE NA FALSE`, and `gcd(c(12L, NA), 8L)`
+returns `4 NA`.
+
+A missing value is an error where the function needs an actual value to work
+with: scalar arguments such as `n` in `generate_n_primes()` or `min` and `max`
+in `generate_primes()`, the `tuple` argument of `k_tuple()`, and the
+`upper_bound` argument of `prime_count()` (which must be `TRUE` or `FALSE`).
 
 ### Negative Numbers
 
-Most functions in the package accept negative integers without error, though
-the results follow mathematical convention:
+Some functions have a sensible answer for zero and negative numbers:
 
-- `is_prime`: returns `NA` for non-natural numbers (primality is defined
-  only for natural numbers).
-- `next_prime` / `prev_prime`: negative values are valid starting points
-  for the search.
+- `is_prime`: returns `NA`, because primality is only defined for natural
+  numbers. Note that this is not the same as `FALSE`.
+- `next_prime` / `prev_prime`: negative values are valid starting points for
+  the search.
 - `prime_factors`: returns `integer(0)` for values less than 2.
-- `gcd`, `scm`, `coprime`: use absolute values internally, so negative
-  inputs are handled correctly.
+- `gcd`, `scm`, `coprime`: the sign of the inputs is ignored, so
+  `gcd(-12L, 18L)` is `6`.
 
-Some functions require strictly positive input and will error on zero or
-negative values:
+Other functions are not defined for zero or negative numbers and raise an
+error:
 
-- `phi`: Euler's totient is defined only for positive integers.
-- `prime_count` / `nth_prime_estimate`: require positive `n` because the
-  underlying formulas involve `log(n)`.
+- `phi`: Euler's totient is defined for positive integers.
+- `prime_count` / `nth_prime_estimate`: the estimates are built on the natural
+  logarithm, log(n), which needs a positive n.
 
 ### Disabling Validation
 
-Input validation for `double` inputs can be turned off globally by setting:
+The checks on `double` input can be turned off for the whole R session with:
 
 ```r
 options(primes.validate_inputs = FALSE)
 ```
 
-When disabled, `double` inputs are coerced via `as.integer()` without any range
-or finiteness checks. This is not recommended for interactive use but may be
-useful for performance-sensitive code where inputs are known to be safe. Note
-that scalar, `NA`, and positivity checks still apply regardless of this setting.
+The values are then converted with `as.integer()` and nothing else is checked,
+so out-of-range values become `NA` and non-whole numbers are truncated without
+a warning. This is not recommended for interactive work, but it can save time
+in a long-running analysis whose inputs are already known to be valid. Checks
+for `NA` and for positivity are always applied, regardless of this setting.
