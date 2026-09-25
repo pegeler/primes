@@ -18,17 +18,20 @@ validate_inputs.integer <- function(x, scalar = FALSE, positive = FALSE, ...) {
 #' @exportS3Method
 validate_inputs.double <- function(x, scalar = FALSE, positive = FALSE, ...) {
   if (getOption("primes.validate_inputs", TRUE)) {
-    non_na <- x[!is.na(x)]
-
-    if (any(is.infinite(non_na)))
+    # NOTE: NA and NaN propagate; na.rm = TRUE skips them. Order matters: after
+    # the Inf check every remaining value is finite, so no filtering is needed.
+    if (any(is.infinite(x)))
       stop("infinite values are not allowed")
 
-    finite <- non_na[is.finite(non_na)]
+    # Range is checked after truncation so it matches what as.integer() does.
+    # NOTE: The bounds are symmetric because -2^31 is NA_integer_ in R, so it
+    # is not a valid value even though it fits in 32 bits.
+    whole <- trunc(x)
 
-    if (length(finite) && any(abs(finite) > .Machine$integer.max))
+    if (any(abs(whole) > .Machine$integer.max, na.rm = TRUE))
       stop("values must be representable as 32-bit integers (max: +/- 2147483647)")
 
-    if (length(finite) && any(finite != trunc(finite)))
+    if (any(x != whole, na.rm = TRUE))
       warning("non-integer values will be truncated to integers")
   }
 
