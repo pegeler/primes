@@ -7,6 +7,37 @@ test_that("non-numeric input is rejected", {
   expect_error(validate_inputs(list(1, 2)), "input must be numeric")
 })
 
+test_that("factors, dates, and durations are rejected", {
+  expect_error(validate_inputs(factor(7)), "input must be numeric")
+  expect_error(validate_inputs(as.Date("1970-01-08")), "input must be numeric")
+  expect_error(
+    validate_inputs(as.difftime(7, units = "days")),
+    "input must be numeric"
+  )
+  expect_error(validate_inputs(Sys.time()), "input must be numeric")
+})
+
+test_that("classed numerics are validated by their underlying type", {
+  # NOTE: no base type in the class vector, so dispatch reaches the default
+  expect_identical(validate_inputs(structure(7, class = "foo")), 7L)
+  expect_identical(validate_inputs(structure(7L, class = "foo")), 7L)
+  expect_error(
+    validate_inputs(structure(3e9, class = "foo")),
+    "32-bit integers"
+  )
+  expect_warning(
+    validate_inputs(structure(5.5, class = "foo")),
+    "truncated"
+  )
+  expect_error(
+    validate_inputs(structure(-1L, class = "foo"), positive = TRUE),
+    "must be positive"
+  )
+  # base type is in the class vector, so it dispatches directly
+  expect_true(is_prime(structure(7L, class = c("bar", "integer"))))
+  expect_true(is_prime(structure(7, class = "foo")))
+})
+
 test_that("scalar enforcement works", {
   expect_error(validate_inputs(1:3, scalar = TRUE), "input must be a single value")
   expect_error(validate_inputs(NA_real_, scalar = TRUE), "input must not be NA")

@@ -40,7 +40,14 @@ validate_inputs.double <- function(x, scalar = FALSE, positive = FALSE, ...) {
 
 #' @exportS3Method
 validate_inputs.default <- function(x, ...) {
-  stop("input must be numeric")
+  # NOTE: S3 dispatch only falls back to the implicit class (integer/double)
+  # when there is no class attribute, so a classed numeric lands here.
+  # is.numeric() is FALSE for factor, Date, difftime, and POSIXct, which are
+  # not meaningful inputs, so they are still rejected.
+  if (!is.numeric(x))
+    stop("input must be numeric")
+
+  validate_inputs(unclass(x), ...)
 }
 
 validate_flag <- function(x, name) {
