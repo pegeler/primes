@@ -49,6 +49,33 @@ test_that("NAs propagate in reduction functions", {
   expect_equal(Rscm(c(12L, NA, 36L)), NA_integer_)
 })
 
+test_that("scm returns NA with a warning when the result exceeds 32 bits", {
+  # NOTE: 46341 and 46343 are coprime and their product is just over INT_MAX
+  expect_warning(
+    out <- scm(c(46340L, 46341L), c(46341L, 46343L)),
+    "too large for a 32-bit integer"
+  )
+  expect_identical(out, c(2147441940L, NA))
+  expect_warning(scm(.Machine$integer.max, 2L), "too large for a 32-bit integer")
+  expect_warning(scm(-.Machine$integer.max, 2L), "too large for a 32-bit integer")
+  # An NA input is not an overflow, so it must not warn
+  expect_silent(scm(c(NA, 4L), 6L))
+  # ...but an overflow elsewhere in the same call still does
+  expect_warning(
+    scm(c(NA, 46341L), c(6L, 46343L)),
+    "too large for a 32-bit integer"
+  )
+})
+
+test_that("Rscm returns NA with a warning when the result exceeds 32 bits", {
+  expect_warning(out <- Rscm(46341L, 46343L), "too large for a 32-bit integer")
+  expect_identical(out, NA_integer_)
+  # An overflowed NA must stay NA through the rest of the reduction
+  expect_warning(out <- Rscm(46341L, 46343L, 2L), "too large for a 32-bit integer")
+  expect_identical(out, NA_integer_)
+  expect_silent(Rscm(c(12L, NA, 36L)))
+})
+
 test_that("double input is validated", {
   expect_equal(gcd(6.0, 4.0), 2L)
   expect_error(gcd(3e9, 1))

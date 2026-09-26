@@ -20,12 +20,23 @@ std::vector<int> generate_primes_(int min, int max) {
   if (max < 2 || min > max)
     return {};
 
-  int len = (max + 1) / 2 - 1;
+  // NOTE: Equal to (max + 1) / 2 - 1 without the overflow at INT_MAX. For odd
+  // max = 2k + 1 both are k; for even max = 2k both are k - 1.
+  int len = (max - 1) / 2;
   std::vector<bool> a(len, true);
-  for (int i = 3, stop = sqrt((double)max); i <= stop; i += 2)
-    if (a[num2index(i)])
-      for (int p = i * i, inc = i * 2; p <= max; p += inc)
-        a[num2index(p)] = false;
+  for (int i = 3, stop = sqrt((double)max); i <= stop; i += 2) {
+    if (!a[num2index(i)])
+      continue;
+
+    // Stop when the next multiple would pass max. Testing max - p rather than
+    // p + inc keeps the last step from overflowing int when max is near
+    // INT_MAX. p <= max holds throughout because i * i <= max.
+    for (int p = i * i, inc = i * 2; ; p += inc) {
+      a[num2index(p)] = false;
+      if (max - p < inc)
+        break;
+    }
+  }
 
   std::vector<int> out;
   out.reserve(estimate_output_size(min, max));

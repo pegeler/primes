@@ -21,6 +21,10 @@
 #' elements are used. It is idiomatically equivalent to `Reduce(gcd, x)` or
 #' `Reduce(scm, x)`, where `x` is a vector of integers, but much faster.
 #'
+#' If a least common multiple is too large to be a 32-bit integer (greater than
+#' 2,147,483,647), `scm` and `Rscm` return `NA` for that value and give a
+#' warning.
+#'
 #' @param m,n,... integer vectors.
 #'
 #' @examples
@@ -60,6 +64,22 @@ NULL
 #     scm_(x[1], Recall(x[-1]))
 # }
 
+SCM_OVERFLOW_MSG <-
+  "least common multiple is too large for a 32-bit integer; returning NA"
+
+# NOTE: The C++ returns NA for a least common multiple outside the range of
+# int, which looks just like an NA that came from the input. Without NAs in the
+# input any NA in the output must be an overflow; otherwise work out which is
+# which position by position, with the same recycling as the C++.
+scm_overflowed <- function(out, m, n) {
+  if (!anyNA(m) && !anyNA(n))
+    return(TRUE)
+
+  len <- length(out)
+  input_na <- rep_len(is.na(m), len) | rep_len(is.na(n), len)
+  any(is.na(out) & !input_na)
+}
+
 #' @rdname gcd
 #' @export
 gcd <- function(m, n) {
@@ -74,7 +94,11 @@ gcd <- function(m, n) {
 scm <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
-  .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
+  out <- .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
+  if (anyNA(out) && scm_overflowed(out, m, n))
+    warning(SCM_OVERFLOW_MSG)
+
+  out
 }
 
 #' @rdname gcd
@@ -99,8 +123,12 @@ Rgcd <- function(...) {
 #' @export
 Rscm <- function(...) {
   x <- validate_inputs(unlist(list(...)))
-  if (length(x))
-    Rscm_(x)
-  else
-    integer(0)
+  if (!length(x))
+    return(integer(0))
+
+  out <- Rscm_(x)
+  if (is.na(out) && !anyNA(x))
+    warning(SCM_OVERFLOW_MSG)
+
+  out
 }

@@ -51,6 +51,10 @@ operation is applied to two elements; then the result is used as the first
 operand in a call with the next element. This is done iteratively until all
 elements are used. It is idiomatically equivalent to \code{Reduce(gcd, x)} or
 \code{Reduce(scm, x)}, where \code{x} is a vector of integers, but much faster.
+
+If a least common multiple is too large to be a 32-bit integer (greater than
+2,147,483,647), \code{scm} and \code{Rscm} return \code{NA} for that value and give a
+warning.
 }
 \examples{
 gcd(c(18, 22, 49, 13), 42)

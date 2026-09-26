@@ -56,6 +56,9 @@ handled by its underlying type and works as before.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
+* `scm()` and `Rscm()` return `NA` with a warning when the least common multiple
+  is larger than 2,147,483,647. 1.x returned a wrong number without any
+  warning.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
@@ -85,6 +88,10 @@ These 1.x results were silently wrong:
 * `Rgcd(12, 18, NA)` returned `-2`.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
 * `phi(-6)` returned `-6`.
+* `scm(2147483647L, 2L)` returned `2`, and `Rscm(46341L, 46343L, 2L)` returned
+  `194630`. The least common multiple overflowed a 32-bit integer.
+* `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`. It
+  now returns all 105,097,565 primes below 2^31.
 
 ## Upgrading from 1.x
 

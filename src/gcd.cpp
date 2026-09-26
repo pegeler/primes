@@ -1,7 +1,8 @@
 #include <Rcpp.h>
 #include <algorithm>  // max, swap
+#include <climits>    // INT_MAX
 #include <numeric>    // accumulate
-#include <cstdlib>    // abs
+#include <cstdlib>    // abs, llabs
 
 // [[Rcpp::interfaces(r, cpp)]]
 
@@ -37,20 +38,30 @@ int Rgcd_(const Rcpp::IntegerVector &x) {
   return out;
 }
 
+// NOTE: Returns NA_INTEGER when the result does not fit in an int. The product
+// is widened first because the overflow itself is undefined behavior. The
+// caller is expected to have handled NA inputs already.
 // [[Rcpp::export]]
 int scm_(int m, int n) {
-  return m == 0 || n == 0 ? 0 : abs(m / gcd_(m, n) * n);
+  if (m == 0 || n == 0)
+    return 0;
+
+  long long out = std::llabs(static_cast<long long>(m) / gcd_(m, n) * n);
+  return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 
+// NOTE: NA (from the input, or from an overflow along the way) has to be
+// checked in the accumulator; scm_ would read it as INT_MIN. This also makes
+// it a single pass over x.
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
-  if (Rcpp::any(Rcpp::is_na(x)))
-    return NA_INTEGER;
   return std::accumulate(
     x.begin() + 1,
     x.end(),
     *x.begin(),
-    scm_
+    [](int acc, int y) {
+      return acc == NA_INTEGER || y == NA_INTEGER ? NA_INTEGER : scm_(acc, y);
+    }
   );
 }
 
