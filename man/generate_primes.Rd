@@ -14,7 +14,8 @@ generate_n_primes(n)
 
 \item{max}{the upper bound of the sequence.}
 
-\item{n}{the number of primes to generate.}
+\item{n}{the number of primes to generate. This is an error above
+105,097,565, the number of primes that fit in a 32-bit integer.}
 }
 \value{
 An integer vector of prime numbers.

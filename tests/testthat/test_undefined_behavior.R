@@ -12,16 +12,6 @@ context("Undefined behavior at C++ boundaries")
 
 INT_MAX <- .Machine$integer.max
 
-# Slow or memory-hungry cases are opt-in: PRIMES_TEST_HEAVY=true, with
-# NOT_CRAN=true so skip_on_cran() lets them through.
-skip_unless_heavy <- function() {
-  skip_on_cran()
-  skip_if_not(
-    nzchar(Sys.getenv("PRIMES_TEST_HEAVY")),
-    "set PRIMES_TEST_HEAVY to run slow or memory-hungry tests"
-  )
-}
-
 test_that("prime_count_impl does not convert Inf or NaN to int", {
   # prime_count.cpp: n / log(n) is Inf at n = 1 and NaN for n < 0. Zero is a
   # control: 0 / log(0) is -0, which converts safely.

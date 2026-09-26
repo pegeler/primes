@@ -11,8 +11,8 @@
 #'
 #' The `nth_prime_estimate` function brackets upper and lower bound values of
 #' the nth prime. It is valid for \eqn{n \ge 6}{n >= 6}; for smaller \eqn{n}
-#' the exact prime is returned. The estimate is capped at the largest 32-bit
-#' integer, 2,147,483,647.
+#' the exact prime is returned. The result is `NA` when the estimate is larger
+#' than the largest 32-bit integer, 2,147,483,647.
 #'
 #' The methods of estimation used here are a few of many alternatives. For
 #' further information, the reader is directed to the _References_ section.

@@ -61,7 +61,12 @@ handled by its underlying type and works as before.
   warning.
 * `prime_count(1, ...)` returns `0` (1.x returned `NA`), and
   `nth_prime_estimate()` returns the exact prime for `n` from 1 to 5, where its
-  bounds do not hold. Its estimate is capped at 2,147,483,647.
+  bounds do not hold. Its result is `NA` when the estimate is larger than
+  2,147,483,647.
+* `generate_n_primes()` and `primorial_p()` give an error for `n` above
+  105,097,565, the number of primes that fit in a 32-bit integer, and
+  `nth_prime()` gives `NA` for those elements. 1.x padded the result with
+  zeros.
 * `next_prime(2147483647L)` returns `NA`, because 2^31 - 1 is prime and there
   is no larger 32-bit integer.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
@@ -101,6 +106,9 @@ These 1.x results were silently wrong:
   `3 5 7 11`, and `nth_prime_estimate(1, ...)` returned `NA`. So did estimates
   for `n` above about 1e8.
 * `next_prime(2147483647L)` returned `2`.
+* `generate_n_primes(n)` returned all zeros, and `nth_prime(n)` returned `0`, for
+  `n` above about 100.6 million, including the values up to 105,097,565 that do
+  have a 32-bit answer.
 
 ## Upgrading from 1.x
 

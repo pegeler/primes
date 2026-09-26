@@ -10,10 +10,15 @@ nth_prime(x)
 \item{x}{an integer vector.}
 }
 \value{
-An integer vector.
+An integer vector. Elements are \code{NA} where \code{x} is less than 1 or
+greater than 105,097,565.
 }
 \description{
 Get the n-th prime, \eqn{p_n}, in the sequence of primes.
+}
+\details{
+The result is a 32-bit integer, so the largest \eqn{n} with an answer is
+105,097,565, for which \eqn{p_n} is 2,147,483,647.
 }
 \examples{
 nth_prime(5)

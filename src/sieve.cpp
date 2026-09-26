@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <algorithm>  // max
+#include <climits>    // INT_MAX
 #include <cmath>      // sqrt
 #include <vector>
 
@@ -17,6 +18,11 @@ static inline int estimate_output_size(int min, int max) {
 
 // [[Rcpp::export]]
 std::vector<int> generate_primes_(int min, int max) {
+  // NA means no upper limit, which for an int is INT_MAX. This is what
+  // nth_prime_estimate_impl returns when its estimate does not fit in an int.
+  if (max == NA_INTEGER)
+    max = INT_MAX;
+
   if (max < 2 || min > max)
     return {};
 

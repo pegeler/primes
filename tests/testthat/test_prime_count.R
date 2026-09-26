@@ -23,11 +23,10 @@ test_that("There are no primes at or below 1", {
   expect_identical(prime_count(1L, FALSE), 0L)
 })
 
-test_that("The estimate is capped at INT_MAX rather than overflowing", {
-  expect_identical(
-    nth_prime_estimate(.Machine$integer.max, TRUE),
-    .Machine$integer.max
-  )
+test_that("The estimate is NA when it does not fit in an int", {
+  expect_false(is.na(nth_prime_estimate(100000000L, TRUE)))
+  expect_true(is.na(nth_prime_estimate(105000000L, TRUE)))
+  expect_true(is.na(nth_prime_estimate(.Machine$integer.max, FALSE)))
 })
 
 test_that("double input is validated", {
