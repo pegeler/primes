@@ -59,6 +59,11 @@ handled by its underlying type and works as before.
 * `scm()` and `Rscm()` return `NA` with a warning when the least common multiple
   is larger than 2,147,483,647. 1.x returned a wrong number without any
   warning.
+* `prime_count(1, ...)` returns `0` (1.x returned `NA`), and
+  `nth_prime_estimate()` returns the exact prime for `n` from 1 to 5, where its
+  bounds do not hold. Its estimate is capped at 2,147,483,647.
+* `next_prime(2147483647L)` returns `NA`, because 2^31 - 1 is prime and there
+  is no larger 32-bit integer.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
@@ -92,6 +97,10 @@ These 1.x results were silently wrong:
   `194630`. The least common multiple overflowed a 32-bit integer.
 * `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`. It
   now returns all 105,097,565 primes below 2^31.
+* `nth_prime_estimate(2:5, TRUE)` returned `0 3 6 10`, below the true primes
+  `3 5 7 11`, and `nth_prime_estimate(1, ...)` returned `NA`. So did estimates
+  for `n` above about 1e8.
+* `next_prime(2147483647L)` returned `2`.
 
 ## Upgrading from 1.x
 
@@ -153,3 +162,14 @@ calling code as described above.
   template (`recycle_binary_op`) with modulo-based index recycling, replacing
   duplicated loop code and the previous `Rcpp::rep_len` approach. It also
   handles `NA` propagation in one place.
+
+* **Undefined behavior.** Running every export against edge values under
+  clang's UBSan found out-of-range `double` to `int` conversions in
+  `prime_count()` and `nth_prime_estimate()`, and signed integer overflow in
+  the sieve's output-size estimate, in `(min - 2)` and `(max + 1)`, in the
+  sieve loop, in `scm()`, and in `next_prime()`. All are fixed. They were
+  reachable by ordinary calls such as `generate_primes(1, 100)`, and, because
+  the C++ interface is exported for `LinkingTo`, some can be reached without
+  the R-level validation. `Dockerfile.ubsan` builds an image to reproduce the
+  run, and `tests/testthat/test_undefined_behavior.R` keeps these cases
+  covered.

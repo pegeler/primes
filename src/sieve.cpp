@@ -43,7 +43,9 @@ std::vector<int> generate_primes_(int min, int max) {
 
   if (min <= 2)
     out.push_back(2);
-  for (int i = std::max(0, (min - 2) / 2); i < len; i++)
+  // NOTE: Testing min > 2 first keeps (min - 2) from overflowing for min near
+  // -INT_MAX; for min <= 2 the quotient is never positive anyway.
+  for (int i = min > 2 ? (min - 2) / 2 : 0; i < len; i++)
     if (a[i])
       out.push_back(index2num(i));
 

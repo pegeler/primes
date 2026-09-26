@@ -6,7 +6,9 @@ context("Undefined behavior at C++ boundaries")
 # running every export against edge values under clang UBSan. There are no
 # real assertions on purpose: the only goal is for a sanitizer build to execute
 # the offending expression, and the closing expect_true(TRUE) just keeps
-# testthat from flagging the test as empty. See Dockerfile.ubsan.
+# testthat from flagging the test as empty. Fixed findings stay here so a
+# sanitizer run keeps covering them; the fixed behavior is asserted in the
+# per-function test files. See Dockerfile.ubsan.
 
 INT_MAX <- .Machine$integer.max
 

@@ -7,6 +7,8 @@ test_that("Prime numbers can be generated, full stop", {
 test_that("'min' is respected", {
   expect_equal(generate_primes(4, 12), c(5,7,11))
   expect_equal(generate_primes(5, 12), c(5,7,11))
+  expect_equal(generate_primes(1, 12), c(2,3,5,7,11))
+  expect_equal(generate_primes(-2147483647L, 12), c(2,3,5,7,11))
 })
 
 test_that("The sieve agrees with is_prime at odd, even, and square limits", {

@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <climits>    // INT_MAX
 
 #include "primes.h"
 
@@ -12,6 +13,9 @@ Rcpp::IntegerVector next_prime_impl(const Rcpp::IntegerVector &x) {
 
   for (auto n : x) {
     if (Rcpp::IntegerVector::is_na(n)) {
+      *(it++) = NA_INTEGER;
+    } else if (n == INT_MAX) {
+      // 2^31 - 1 is prime and there is no larger int, so ++n would overflow
       *(it++) = NA_INTEGER;
     } else {
       while (!is_prime_(++n))
