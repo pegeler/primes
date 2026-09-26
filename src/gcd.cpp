@@ -1,8 +1,9 @@
 #include <Rcpp.h>
 #include <algorithm>  // max, swap
 #include <climits>    // INT_MAX
+#include <cstdint>    // int64_t
 #include <numeric>    // accumulate
-#include <cstdlib>    // abs, llabs
+#include <cstdlib>    // abs
 
 // [[Rcpp::interfaces(r, cpp)]]
 
@@ -46,7 +47,7 @@ int scm_(int m, int n) {
   if (m == 0 || n == 0)
     return 0;
 
-  long long out = std::llabs(static_cast<long long>(m) / gcd_(m, n) * n);
+  std::int64_t out = std::abs(static_cast<std::int64_t>(m) / gcd_(m, n) * n);
   return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 

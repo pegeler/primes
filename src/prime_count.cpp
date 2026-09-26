@@ -35,6 +35,8 @@ int nth_prime_estimate_impl(int n, bool upper_bound) {
     return first_primes[n - 1];
 
   double c = upper_bound ? 0 : 1;
-  // The estimate passes INT_MAX for n above about 1e8, before p_n itself does
+  // For n above about 100.6 million the upper-bound estimate is larger than
+  // INT_MAX and cannot be returned as an int, so this is NA. The true p_n is
+  // smaller than the estimate and still fits up to n = P_N_MAX.
   return int_or_na(n * (log(n * log((double)n)) - c));
 }
