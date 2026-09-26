@@ -1,0 +1,30 @@
+# R-devel built with clang -fsanitize=address,undefined (rocker's `RD`), with
+# the test dependencies for primes installed under the same flags.
+#
+# Build (--pull fetches the current base image; nothing is COPYed, and
+# .dockerignore keeps the build context empty):
+#   docker build --pull -t r-ubsan-local:deps -f Dockerfile.ubsan .
+#
+# Run the test suite on the working tree (copies it, so untracked files come
+# along; the mount is read-only):
+#   docker run --rm -v "$PWD:/src:ro" r-ubsan-local:deps bash -c \
+#     'cp -r /src /tmp/primes && cd /tmp/primes && RD CMD INSTALL . \
+#      && cd tests && RDscript testthat.R' 2>&1 | tee .local/ubsan.log
+#   grep -n "runtime error\|SUMMARY" .local/ubsan.log
+#
+# NOTE: -fsanitize=undefined reports and continues by default, so a test run
+# can pass while still printing "runtime error" lines; grep the log.
+
+FROM rocker/r-devel-ubsan-clang:latest
+
+# 'fs' (a testthat dependency) needs libuv headers to build from source.
+RUN apt-get update && apt-get install -y --no-install-recommends libuv1-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installed with the sanitizer flags from RD's Makeconf, so it is slow.
+RUN RD -q -e 'options(repos = c(CRAN = "https://cloud.r-project.org")); \
+    install.packages(c("Rcpp", "testthat", "withr"), Ncpus = 4L)' \
+    && RD -q -e 'stopifnot(all(c("Rcpp", "testthat", "withr") %in% rownames(installed.packages())))'
+
+# Leak detection is noisy under R and unrelated to the checks of interest.
+ENV ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=print_stacktrace=1
