@@ -32,7 +32,6 @@ test_that("Can generate up to the nth prime", {
 test_that("Asking for more primes than fit in an int is an error", {
   # It used to return a vector padded with zeros
   expect_error(generate_n_primes(105097566L), "at most 105097565")
-  expect_error(primorial_p(105097566L), "at most 105097565")
 })
 
 test_that("double input is validated for generators", {

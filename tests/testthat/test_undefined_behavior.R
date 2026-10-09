@@ -40,6 +40,7 @@ test_that("generate_primes_ accepts min at or below 1", {
 
 test_that("sexy_prime_triplets_impl at INT_MAX", {
   # max + 6 overflowed
+  skip_unless_heavy()
   sexy_prime_triplets_impl(INT_MAX - 20L, INT_MAX)
   expect_true(TRUE)
 })

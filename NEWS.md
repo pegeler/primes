@@ -56,6 +56,7 @@ handled by its underlying type and works as before.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
+  Any invalid `tuple` now errors before the primes are generated.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
@@ -95,8 +96,12 @@ These 1.x results were silently wrong:
   returns the exact prime.
 * `generate_n_primes(n)` returned all zeros, and `nth_prime(n)` returned `0`,
   for `n` above about 100.6 million. Both now work up to 105,097,565, the
-  number of primes below 2^31. Above that, `generate_n_primes()` and
-  `primorial_p()` error and `nth_prime()` returns `NA`.
+  number of primes below 2^31. Above that, `generate_n_primes()` errors and
+  `nth_prime()` returns `NA`.
+* `primorial_n(47)` returned `614889782588491392`; the true value ends in
+  `410`. A `double` holds a primorial exactly only up to 43#, so
+  `primorial_n()` above 46 and `primorial_p()` above 14 now return `NA` with a
+  warning.
 * `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`.
 * `next_prime(2147483647L)` returned `2`; it is now `NA`, as 2^31 - 1 is the
   largest 32-bit prime.
