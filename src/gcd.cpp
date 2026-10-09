@@ -1,56 +1,46 @@
 #include <Rcpp.h>
-#include <algorithm>  // max, swap
-#include <numeric>    // accumulate
-#include <cstdlib>    // abs
+#include <algorithm>  // max
+#include <climits>    // INT_MAX
+#include <cstdint>    // int64_t
+#include <numeric>    // accumulate, gcd, lcm
 
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-int gcd_(int m, int n) {
-
-  m = abs(m), n = abs(n);
-  if (n > m)
-    std::swap(m, n);
-
-  // Euclid's Algorithm
-  while (n > 0) {
-    int r = m % n;
-    m = n;
-    n = r;
-  }
-
-  return m;
-}
+int gcd_(int m, int n) { return std::gcd(m, n); }
 
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
-  int out = x[0];
+  int out = 0;  // gcd(0, a) = |a|
 
-  if (Rcpp::IntegerVector::is_na(out))
-    return NA_INTEGER;
-
-  for (auto it = x.begin() + 1; it != x.end() && out != 1; ++it) {
+  // NOTE: Keep scanning after reaching 1 so that a later NA is not missed
+  for (auto it = x.begin(); it != x.end(); ++it) {
     if (Rcpp::IntegerVector::is_na(*it))
       return NA_INTEGER;
-    out = gcd_(out, *it);
+    if (out != 1)
+      out = gcd_(out, *it);
   }
   return out;
 }
 
+// NOTE: NA when the result does not fit in an int. Inputs must not be NA.
 // [[Rcpp::export]]
 int scm_(int m, int n) {
-  return m == 0 || n == 0 ? 0 : abs(m / gcd_(m, n) * n);
+  // Computed in 64 bits, where the lcm of two ints always fits
+  std::int64_t out = std::lcm<std::int64_t, std::int64_t>(m, n);
+  return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 
+// NOTE: NA can come from the input or from an overflow along the way
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
-  if (Rcpp::any(Rcpp::is_na(x)))
-    return NA_INTEGER;
   return std::accumulate(
-    x.begin() + 1,
+    x.begin(),
     x.end(),
-    *x.begin(),
-    scm_
+    1,  // lcm(1, a) = |a|
+    [](int acc, int y) {
+      return acc == NA_INTEGER || y == NA_INTEGER ? NA_INTEGER : scm_(acc, y);
+    }
   );
 }
 

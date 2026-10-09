@@ -10,6 +10,25 @@ test_that("Value of nth prime", {
   expect_lte(nth_prime_estimate(100, FALSE), generate_n_primes(100)[100])
 })
 
+test_that("The first five primes are exact, since the bounds need n >= 6", {
+  first <- c(2L, 3L, 5L, 7L, 11L)
+  for (upper_bound in c(TRUE, FALSE)) {
+    estimates <- vapply(1:5, nth_prime_estimate, 1L, upper_bound = upper_bound)
+    expect_identical(estimates, first)
+  }
+})
+
+test_that("There are no primes at or below 1", {
+  expect_identical(prime_count(1L, TRUE), 0L)
+  expect_identical(prime_count(1L, FALSE), 0L)
+})
+
+test_that("The estimate is NA when it does not fit in an int", {
+  expect_false(is.na(nth_prime_estimate(100000000L, TRUE)))
+  expect_true(is.na(nth_prime_estimate(105000000L, TRUE)))
+  expect_true(is.na(nth_prime_estimate(.Machine$integer.max, FALSE)))
+})
+
 test_that("double input is validated", {
   expect_gte(prime_count(100.0, TRUE), length(generate_primes(max = 100)))
   expect_error(prime_count(3e9, TRUE))

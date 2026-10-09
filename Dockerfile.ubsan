@@ -1,0 +1,34 @@
+# R-devel built with clang -fsanitize=address,undefined (rocker's `RD`), with
+# the test dependencies installed under the same flags.
+#
+# Build:
+#   docker build --pull -t r-ubsan-local:deps -f Dockerfile.ubsan .
+#
+# Run the tests on the working tree (drop the PRIMES_TEST_HEAVY line to skip
+# the slow cases):
+#   mkdir -p .local && docker run --rm -v "$PWD:/src:ro" \
+#     -e NOT_CRAN=true -e PRIMES_TEST_HEAVY=true r-ubsan-local:deps bash -c \
+#     'cp -r /src /tmp/primes && cd /tmp/primes && RD CMD INSTALL --preclean . \
+#      && cd tests && RDscript testthat.R' 2>&1 | tee .local/ubsan.log
+#   grep -n "runtime error\|SUMMARY" .local/ubsan.log
+#
+# --preclean matters: the copy brings along any object files from a host build
+# (R CMD INSTALL, or load_all() via roxygenise()), and without it make reuses
+# them, so most of the package would not be instrumented.
+#
+# halt_on_error makes the first UBSan report abort the run; the grep is a
+# backstop.
+
+FROM rocker/r-devel-ubsan-clang:latest
+
+# 'fs' (a testthat dependency) needs libuv headers to build from source.
+RUN apt-get update && apt-get install -y --no-install-recommends libuv1-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installed with the sanitizer flags from RD's Makeconf, so it is slow.
+RUN RD -q -e 'options(repos = c(CRAN = "https://cloud.r-project.org")); \
+    install.packages(c("Rcpp", "testthat", "withr"), Ncpus = 4L)' \
+    && RD -q -e 'stopifnot(all(c("Rcpp", "testthat", "withr") %in% rownames(installed.packages())))'
+
+# Leak detection is noisy under R and unrelated to the checks of interest.
+ENV ASAN_OPTIONS=detect_leaks=0 UBSAN_OPTIONS=print_stacktrace=1:halt_on_error=1

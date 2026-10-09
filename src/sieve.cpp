@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <algorithm>  // max
 #include <cmath>      // sqrt
+#include <cstdint>    // int64_t
 #include <vector>
 
 #include "primes.h"
@@ -20,11 +21,11 @@ std::vector<int> generate_primes_(int min, int max) {
   if (max < 2 || min > max)
     return {};
 
-  int len = (max + 1) / 2 - 1;
+  int len = (max - 1) / 2;  // (max + 1) / 2 - 1, without overflow
   std::vector<bool> a(len, true);
   for (int i = 3, stop = sqrt((double)max); i <= stop; i += 2)
     if (a[num2index(i)])
-      for (int p = i * i, inc = i * 2; p <= max; p += inc)
+      for (std::int64_t p = i * i; p <= max; p += 2 * i)
         a[num2index(p)] = false;
 
   std::vector<int> out;
@@ -32,7 +33,7 @@ std::vector<int> generate_primes_(int min, int max) {
 
   if (min <= 2)
     out.push_back(2);
-  for (int i = std::max(0, (min - 2) / 2); i < len; i++)
+  for (int i = min > 2 ? (min - 2) / 2 : 0; i < len; i++)
     if (a[i])
       out.push_back(index2num(i));
 

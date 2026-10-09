@@ -36,9 +36,9 @@ numbers are also called \emph{mutually prime} or \emph{relatively prime} numbers
 The smallest common multiple is often called the \emph{least common multiple}.
 }
 \details{
-The greatest common divisor uses Euclid's algorithm, a fast and widely
-used method. The smallest common multiple and coprimality are computed using
-the gcd, where \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
+The greatest common divisor and smallest common multiple use the C++
+standard library's \code{std::gcd} and \code{std::lcm}. Coprimality is computed using
+the gcd. Mathematically, \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
 and two numbers are coprime when \eqn{gcd = 1}.
 
 The \code{gcd}, \code{scm}, and \code{coprime} functions perform element-wise computation.
@@ -52,6 +52,13 @@ operand in a call with the next element. This is done iteratively until all
 elements are used. It is idiomatically equivalent to \code{Reduce(gcd, x)} or
 \code{Reduce(scm, x)}, where \code{x} is a vector of integers, but much faster.
 }
+\section{Overflow}{
+
+If a least common multiple is too large to be a 32-bit integer (greater than
+2,147,483,647), \code{scm} and \code{Rscm} return \code{NA} for that value and give a
+warning.
+}
+
 \examples{
 gcd(c(18, 22, 49, 13), 42)
 ## [1] 6 2 7 1

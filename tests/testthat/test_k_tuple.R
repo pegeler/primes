@@ -15,6 +15,14 @@ test_that("NA in tuple is rejected", {
   expect_error(k_tuple(2L, 19L, c(0L, NA)), "must not contain NA")
 })
 
+test_that("An invalid tuple is rejected before sieving", {
+  # A large max makes the test slow if the sieve runs first
+  max <- .Machine$integer.max
+  expect_error(k_tuple(2L, max, 0L), "at least 2")
+  expect_error(k_tuple(2L, max, c(2L, 4L)), "must be zero")
+  expect_error(k_tuple(2L, max, c(0L, 4L, 2L)), "ascending order")
+})
+
 test_that("Prime triplets are correct", {
   expect_equal(k_tuple(2,19,c(0,2,6)), list(c(5L,7L,11L), c(11L,13L,17L)))
 })
@@ -52,4 +60,11 @@ test_that("Sexy prime triplets are correct", {
       c(647,653,659), c(727,733,739), c(941,947,953), c(971,977,983)
     )
   )
+})
+
+test_that("Sexy prime triplets are found with max at INT_MAX", {
+  skip_unless_heavy()
+  # max + 6 used to overflow and return nothing
+  triplet <- list(c(2147482937L, 2147482943L, 2147482949L))
+  expect_identical(sexy_prime_triplets(2147482932L, .Machine$integer.max), triplet)
 })

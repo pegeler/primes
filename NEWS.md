@@ -56,13 +56,13 @@ handled by its underlying type and works as before.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
+  Any invalid `tuple` now errors before the primes are generated.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
 ### Unchanged
 
-`nth_prime(0L)`, `nth_prime(-3L)`, and `prime_count(1, TRUE)` behave as they did
-in 1.x. Matrices and named vectors still work. Functions where a negative input
+`nth_prime(0L)` and `nth_prime(-3L)` behave as they did in 1.x. Matrices and named vectors still work. Functions where a negative input
 is meaningful (`gcd()`, `scm()`, `coprime()`, `next_prime()`, `prev_prime()`)
 still accept it.
 
@@ -82,9 +82,31 @@ These 1.x results were silently wrong:
 * `next_prime(2^31)` returned `2`.
 * `gcd(NA, 4)` returned `4`.
 * `next_prime(c(7L, NA))` returned `c(11, 2)`.
-* `Rgcd(12, 18, NA)` returned `-2`.
+* `Rgcd(12, 18, NA)` returned `-2`, and `Rgcd(3, 4, NA)` returned `1`. `NA`
+  now gives `NA` wherever it is in the input.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
 * `phi(-6)` returned `-6`.
+* `scm(2147483647L, 2L)` returned `2`. A least common multiple above
+  2,147,483,647 is now `NA` with a warning, in `scm()` and `Rscm()`.
+* `prime_count(1, TRUE)` returned `NA`; it is now `0`.
+* `Rgcd(-4)` and `Rscm(-4)` returned `-4`; they are now `4`, like every other
+  result of `gcd()` and `scm()`.
+* `nth_prime_estimate(1, TRUE)` returned `NA`, and `nth_prime_estimate(2, TRUE)`
+  returned `0`. For `n` from 1 to 5, where the bounds do not hold, it now
+  returns the exact prime.
+* `generate_n_primes(n)` returned all zeros, and `nth_prime(n)` returned `0`,
+  for `n` above about 100.6 million. Both now work up to 105,097,565, the
+  number of primes below 2^31. Above that, `generate_n_primes()` errors and
+  `nth_prime()` returns `NA`.
+* `primorial_n(47)` returned `614889782588491392`; the true value ends in
+  `410`. A `double` holds a primorial exactly only up to 43#, so
+  `primorial_n()` above 46 and `primorial_p()` above 14 now return `NA` with a
+  warning.
+* `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`.
+* `next_prime(2147483647L)` returned `2`; it is now `NA`, as 2^31 - 1 is the
+  largest 32-bit prime.
+* `sexy_prime_triplets()` missed every triplet when `max` was within 6 of
+  2,147,483,647.
 
 ## Upgrading from 1.x
 
@@ -146,3 +168,11 @@ calling code as described above.
   template (`recycle_binary_op`) with modulo-based index recycling, replacing
   duplicated loop code and the previous `Rcpp::rep_len` approach. It also
   handles `NA` propagation in one place.
+
+* `gcd()` and `scm()` use `std::gcd` and `std::lcm`, so the package now
+  requires C++17 (the default since R 4.3).
+
+* **Undefined behavior.** Fixed integer overflows and out-of-range `double` to
+  `int` conversions found with clang's UBSan, some reachable from ordinary
+  calls such as `generate_primes(1, 100)`. `Dockerfile.ubsan` reproduces the
+  run; `tests/testthat/test_undefined_behavior.R` keeps the cases covered.

@@ -25,6 +25,13 @@ The \code{primorial_p} function computes the primorial with respect the the firs
 \code{n} \emph{prime} numbers; while the \code{primorial_n} function computes the primorial
 with respect the the first \code{n} \emph{natural} numbers.
 }
+\section{Precision}{
+
+The result is a \code{double}, which can hold a primorial exactly only up to
+43# = 13,082,761,331,670,030. So \code{primorial_n(n)} for \code{n} above 46, and
+\code{primorial_p(n)} for \code{n} above 14, return \code{NA} with a warning.
+}
+
 \author{
 Paul Egeler, MS
 }

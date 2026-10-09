@@ -15,3 +15,14 @@ test_that("p_n#", {
   expect_equal(primorial_p(2), 6)
   expect_equal(primorial_p(10), 6469693230)
 })
+
+test_that("Primorials are NA where a double cannot hold them exactly", {
+  # 43# is the largest exact primorial
+  expect_identical(primorial_n(46), 13082761331670030)
+  expect_identical(primorial_p(14), 13082761331670030)
+  expect_warning(out <- primorial_n(47), "too large to represent exactly")
+  expect_identical(out, NA_real_)
+  expect_warning(out <- primorial_p(15), "too large to represent exactly")
+  expect_identical(out, NA_real_)
+  expect_warning(primorial_p(105097566L), "too large to represent exactly")
+})

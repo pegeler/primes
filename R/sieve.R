@@ -6,7 +6,8 @@
 #'
 #' @param min the lower bound of the sequence.
 #' @param max the upper bound of the sequence.
-#' @param n the number of primes to generate.
+#' @param n the number of primes to generate. This is an error above
+#'   105,097,565, the number of primes that fit in a 32-bit integer.
 #' @examples
 #' generate_primes(max = 12)
 #' ## [1]  2  3  5  7 11

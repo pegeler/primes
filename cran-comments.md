@@ -1,3 +1,28 @@
+## Version 2.0.0
+
+This release makes breaking changes to the API: invalid input (out-of-range or
+fractional `double`, `logical`, non-natural numbers to `is_prime()`) now
+errors, warns, or returns `NA` instead of silently returning a wrong result.
+See _NEWS.md_.
+
+Reverse dependencies (LISTO, SFDesign): neither is expected to be affected.
+Maintainers were notified on [DATE]. [RESPONSES]
+
+All tests, and the exported functions at edge values, were run using
+`rocker/r-devel-ubsan-clang`; no undefined behavior was detected. The undefined
+behavior this turned up in earlier versions is fixed.
+
+### R CMD check results
+
+`R CMD check --as-cran` on Debian GNU/Linux (`rocker/r-devel` image):
+
+* R 4.6.1 (release): 0 errors | 0 warnings | 1 note
+* R Under development (r90574, 2026-09-20): 0 errors | 0 warnings | 2 notes
+
+The notes come from the local environment: package V8 is not installed, so math
+rendering in the HTML manual is skipped, and (R-devel only) Debian's default
+compiler flags are reported as non-portable.
+
 ## Version 1.6.1
 
 The failure observed in _tests/failures/testthat.Rout_ was inadvertently carried

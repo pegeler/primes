@@ -5,9 +5,9 @@
 #' numbers are also called _mutually prime_ or _relatively prime_ numbers.
 #' The smallest common multiple is often called the _least common multiple_.
 #'
-#' The greatest common divisor uses Euclid's algorithm, a fast and widely
-#' used method. The smallest common multiple and coprimality are computed using
-#' the gcd, where \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
+#' The greatest common divisor and smallest common multiple use the C++
+#' standard library's `std::gcd` and `std::lcm`. Coprimality is computed using
+#' the gcd. Mathematically, \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
 #' and two numbers are coprime when \eqn{gcd = 1}.
 #'
 #' The `gcd`, `scm`, and `coprime` functions perform element-wise computation.
@@ -20,6 +20,11 @@
 #' operand in a call with the next element. This is done iteratively until all
 #' elements are used. It is idiomatically equivalent to `Reduce(gcd, x)` or
 #' `Reduce(scm, x)`, where `x` is a vector of integers, but much faster.
+#'
+#' @section Overflow:
+#' If a least common multiple is too large to be a 32-bit integer (greater than
+#' 2,147,483,647), `scm` and `Rscm` return `NA` for that value and give a
+#' warning.
 #'
 #' @param m,n,... integer vectors.
 #'
@@ -60,6 +65,9 @@ NULL
 #     scm_(x[1], Recall(x[-1]))
 # }
 
+SCM_OVERFLOW_MSG <-
+  "least common multiple is too large for a 32-bit integer; returning NA"
+
 #' @rdname gcd
 #' @export
 gcd <- function(m, n) {
@@ -74,7 +82,13 @@ gcd <- function(m, n) {
 scm <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
-  .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
+  out <- .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
+  # An NA in the output that is not from an NA input is an overflow
+  len <- length(out)
+  if (any(is.na(out) & !is.na(rep_len(m, len)) & !is.na(rep_len(n, len))))
+    warning(SCM_OVERFLOW_MSG)
+
+  out
 }
 
 #' @rdname gcd
@@ -99,8 +113,12 @@ Rgcd <- function(...) {
 #' @export
 Rscm <- function(...) {
   x <- validate_inputs(unlist(list(...)))
-  if (length(x))
-    Rscm_(x)
-  else
-    integer(0)
+  if (!length(x))
+    return(integer(0))
+
+  out <- Rscm_(x)
+  if (is.na(out) && !anyNA(x))
+    warning(SCM_OVERFLOW_MSG)
+
+  out
 }

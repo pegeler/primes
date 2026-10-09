@@ -4,6 +4,10 @@
 #include <Rcpp.h>
 #include <vector>
 
+// The number of primes that fit in an int, pi(2^31 - 1). Since 2^31 - 1 is
+// prime, this is also the largest n for which the n-th prime is representable.
+constexpr int P_N_MAX = 105097565;
+
 std::vector<int> generate_primes_(int min, int max);
 std::vector<int> generate_n_primes_impl(int n);
 Rcpp::IntegerVector nth_prime_impl(const Rcpp::IntegerVector& x);
