@@ -161,6 +161,9 @@ calling code as described above.
   duplicated loop code and the previous `Rcpp::rep_len` approach. It also
   handles `NA` propagation in one place.
 
+* `gcd()` and `scm()` use `std::gcd` and `std::lcm`, so the package now
+  requires C++17 (the default since R 4.3).
+
 * **Undefined behavior.** Fixed integer overflows and out-of-range `double` to
   `int` conversions found with clang's UBSan, some reachable from ordinary
   calls such as `generate_primes(1, 100)`. `Dockerfile.ubsan` reproduces the

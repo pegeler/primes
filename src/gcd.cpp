@@ -1,28 +1,13 @@
 #include <Rcpp.h>
-#include <algorithm>  // max, swap
+#include <algorithm>  // max
 #include <climits>    // INT_MAX
 #include <cstdint>    // int64_t
-#include <numeric>    // accumulate
-#include <cstdlib>    // abs
+#include <numeric>    // accumulate, gcd, lcm
 
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-int gcd_(int m, int n) {
-
-  m = abs(m), n = abs(n);
-  if (n > m)
-    std::swap(m, n);
-
-  // Euclid's Algorithm
-  while (n > 0) {
-    int r = m % n;
-    m = n;
-    n = r;
-  }
-
-  return m;
-}
+int gcd_(int m, int n) { return std::gcd(m, n); }
 
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
@@ -42,10 +27,8 @@ int Rgcd_(const Rcpp::IntegerVector &x) {
 // NOTE: NA when the result does not fit in an int. Inputs must not be NA.
 // [[Rcpp::export]]
 int scm_(int m, int n) {
-  if (m == 0 || n == 0)
-    return 0;
-
-  std::int64_t out = std::abs(static_cast<std::int64_t>(m) / gcd_(m, n) * n);
+  // Computed in 64 bits, where the lcm of two ints always fits
+  std::int64_t out = std::lcm<std::int64_t, std::int64_t>(m, n);
   return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 
