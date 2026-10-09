@@ -21,6 +21,9 @@ test_that("An invalid tuple is rejected before sieving", {
   expect_error(k_tuple(2L, max, 0L), "at least 2")
   expect_error(k_tuple(2L, max, c(2L, 4L)), "must be zero")
   expect_error(k_tuple(2L, max, c(0L, 4L, 2L)), "ascending order")
+  # A repeated offset can never match
+  expect_error(k_tuple(2L, max, c(0L, 0L)), "strictly ascending")
+  expect_error(k_tuple(2L, max, c(0L, 2L, 2L)), "strictly ascending")
 })
 
 test_that("Prime triplets are correct", {

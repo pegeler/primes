@@ -17,6 +17,9 @@ Rcpp::IntegerVector next_prime_impl(const Rcpp::IntegerVector &x) {
     } else if (n == INT_MAX) {
       // 2^31 - 1 is prime and there is no larger int, so ++n would overflow
       *(it++) = NA_INTEGER;
+    } else if (n < 2) {
+      // Otherwise a large negative n would step up one at a time to 2
+      *(it++) = 2;
     } else {
       while (!is_prime_(++n))
         ;

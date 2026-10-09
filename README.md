@@ -38,7 +38,7 @@ And the development version from [GitHub](https://github.com/) with:
 
 ```r
 # install.packages("devtools")
-devtools::install_github("ironholds/primes")
+devtools::install_github("pegeler/primes")
 ```
 
 ## Example
@@ -75,7 +75,8 @@ follows:
 
 Inputs that are already integers (e.g., `5L` or `1:10`) skip these checks.
 Only numbers are accepted: `logical` input, including a bare `NA`, is an error.
-Use `NA_integer_` to pass a missing value.
+Use `NA_integer_` to pass a missing value. `bit64::integer64` is also an error;
+convert it with `as.integer()`.
 
 ### `NA` Handling
 
@@ -104,6 +105,8 @@ Other functions are not defined for zero or negative numbers and raise an
 error:
 
 - `phi`: Euler's totient is defined for positive integers.
+- `ruth_aaron_pairs`: `min` must be positive, because numbers below 2 have no
+  prime factors to sum.
 - `prime_count` / `nth_prime_estimate`: the estimates are built on the natural
   logarithm, log(n), which needs a positive n.
 

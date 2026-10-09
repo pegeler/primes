@@ -8,9 +8,10 @@ static const double prime_count_c = 30 * log((double)113) / 113;
 
 // [[Rcpp::export]]
 int prime_count_impl(int n, bool upper_bound) {
-  // No primes below 2 (and n / log(n) is Inf or NaN there)
-  if (n < 2)
-    return 0;
+  // Exact below 3: n / log(n) is Inf or NaN below 2, and 2 / log(2)
+  // truncates to 2, but there is only one prime <= 2
+  if (n < 3)
+    return n == 2;
 
   return (upper_bound ? prime_count_c : 1) * n / log((double)n);
 }

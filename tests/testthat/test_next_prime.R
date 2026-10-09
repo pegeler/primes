@@ -2,6 +2,8 @@ context("Next and previous primes")
 
 test_that("Search for next prime works", {
   expect_equal(next_prime(-1:7), c(2L, 2L, 2L, 3L, 5L, 5L, 7L, 7L, 11L))
+  # This used to step up one at a time, about 2^31 steps
+  expect_identical(next_prime(-.Machine$integer.max), 2L)
 })
 
 test_that("There is no next prime after the largest 32-bit prime", {

@@ -48,3 +48,12 @@ test_that("Compute with _all_ factors", {
 test_that("Compute with distinct factors", {
   expect_equal(ruth_aaron_pairs(5, 50, TRUE), list(5:6, 24:25, 49:50))
 })
+
+test_that("Numbers below 1 are rejected and an empty range gives no pairs", {
+  # 1.x paired every consecutive number below 2, whose factor sums are all 0
+  expect_error(ruth_aaron_pairs(0, 6), "must be positive")
+  expect_error(ruth_aaron_pairs(-3, 6), "must be positive")
+  expect_equal(ruth_aaron_pairs(1, 6), list(5:6))
+  expect_identical(ruth_aaron_pairs(10, 5), list())
+  expect_error(ruth_aaron_pairs(5, 50, NA), "must be TRUE or FALSE")
+})

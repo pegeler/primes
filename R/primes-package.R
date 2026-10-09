@@ -7,9 +7,10 @@
 #'
 #' @section Performance:
 #' Primes are generated with an optimized Sieve of Eratosthenes, and greatest
-#' common divisors are found with Euclid's algorithm. Inputs that are already
-#' integers (e.g., `5L` or `1:10`) skip the checks described under _Input
-#' handling_, so they are the fastest to process.
+#' common divisors and least common multiples use the C++ standard library's
+#' `std::gcd` and `std::lcm`. Inputs that are already integers (e.g., `5L` or
+#' `1:10`) skip the checks described under _Input handling_, so they are the
+#' fastest to process.
 #'
 #' @section Input handling:
 #' The functions in this package work on 32-bit integers. R's default numeric
@@ -26,7 +27,8 @@
 #' }
 #'
 #' Only numbers are accepted. `logical` input, including a bare `NA`, is an
-#' error; use `NA_integer_` to pass a missing value.
+#' error; use `NA_integer_` to pass a missing value. \pkg{bit64}'s `integer64`
+#' is also an error; convert it with `as.integer()`.
 #'
 #' @section NA handling:
 #' Missing values in a vector are propagated element-wise. For example,
@@ -58,6 +60,8 @@
 #' error:
 #' \itemize{
 #'   \item \code{\link{phi}}: Euler's totient is defined for positive integers.
+#'   \item \code{\link{ruth_aaron_pairs}}: `min` must be positive, because
+#'     numbers below 2 have no prime factors to sum.
 #'   \item \code{\link{prime_count}} / \code{\link{nth_prime_estimate}}: the
 #'     estimates are built on the natural logarithm, \eqn{\log(n)}, which needs
 #'     a positive \eqn{n}.

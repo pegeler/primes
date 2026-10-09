@@ -26,7 +26,8 @@ third_cousin_primes(min, max)
 
 \item{max}{the upper bound of the sequence.}
 
-\item{tuple}{an integer vector representing the target \emph{k}-tuple pattern.}
+\item{tuple}{an integer vector representing the target \emph{k}-tuple pattern: at
+least two offsets, starting at \code{0} and strictly increasing.}
 }
 \value{
 A list of vectors of prime numbers satisfying the condition of

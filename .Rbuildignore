@@ -16,3 +16,4 @@
 ^Dockerfile$
 ^Dockerfile\.ubsan$
 ^\.dockerignore$
+^\.local$

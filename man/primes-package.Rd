@@ -13,9 +13,10 @@ computations are implemented in C++ via \pkg{Rcpp}.
 \section{Performance}{
 
 Primes are generated with an optimized Sieve of Eratosthenes, and greatest
-common divisors are found with Euclid's algorithm. Inputs that are already
-integers (e.g., \code{5L} or \code{1:10}) skip the checks described under \emph{Input
-handling}, so they are the fastest to process.
+common divisors and least common multiples use the C++ standard library's
+\code{std::gcd} and \code{std::lcm}. Inputs that are already integers (e.g., \code{5L} or
+\code{1:10}) skip the checks described under \emph{Input handling}, so they are the
+fastest to process.
 }
 
 \section{Input handling}{
@@ -34,7 +35,8 @@ toward zero (to \code{5}) with a warning.
 }
 
 Only numbers are accepted. \code{logical} input, including a bare \code{NA}, is an
-error; use \code{NA_integer_} to pass a missing value.
+error; use \code{NA_integer_} to pass a missing value. \pkg{bit64}'s \code{integer64}
+is also an error; convert it with \code{as.integer()}.
 }
 
 \section{NA handling}{
@@ -70,6 +72,8 @@ Other functions are not defined for zero or negative numbers and raise an
 error:
 \itemize{
 \item \code{\link{phi}}: Euler's totient is defined for positive integers.
+\item \code{\link{ruth_aaron_pairs}}: \code{min} must be positive, because
+numbers below 2 have no prime factors to sum.
 \item \code{\link{prime_count}} / \code{\link{nth_prime_estimate}}: the
 estimates are built on the natural logarithm, \eqn{\log(n)}, which needs
 a positive \eqn{n}.
@@ -90,8 +94,8 @@ long-running analysis whose inputs are already known to be valid. Checks for
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ironholds/primes}
-  \item Report bugs at \url{https://github.com/ironholds/primes/issues}
+  \item \url{https://github.com/pegeler/primes}
+  \item Report bugs at \url{https://github.com/pegeler/primes/issues}
 }
 
 }

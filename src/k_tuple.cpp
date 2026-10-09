@@ -1,6 +1,7 @@
 #include <Rcpp.h>
-#include <algorithm>
+#include <algorithm>  // adjacent_find
 #include <climits>    // INT_MAX
+#include <functional> // greater_equal
 #include <vector>
 
 #include "primes.h"
@@ -33,8 +34,10 @@ Rcpp::List k_tuple_impl(int min, int max, std::vector<int> tuple) {
     Rcpp::stop("`tuple` size must be at least 2.");
   if (tuple[0] != 0)
     Rcpp::stop("the first element of `tuple` must be zero.");
-  if (!std::is_sorted(tuple.begin(), tuple.end()))
-    Rcpp::stop("the elements of `tuple` must be in ascending order.");
+  // A repeated offset could never match, so it would silently find nothing
+  if (std::adjacent_find(tuple.begin(), tuple.end(),
+                         std::greater_equal<int>()) != tuple.end())
+    Rcpp::stop("the elements of `tuple` must be in strictly ascending order.");
 
   Rcpp::List out;
   auto primes = generate_primes_(min, max);

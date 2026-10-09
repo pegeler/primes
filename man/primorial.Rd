@@ -21,9 +21,9 @@ A numeric vector of length 1.
 Computes the primorial for prime numbers and natural numbers.
 }
 \details{
-The \code{primorial_p} function computes the primorial with respect the the first
+The \code{primorial_p} function computes the primorial with respect to the first
 \code{n} \emph{prime} numbers; while the \code{primorial_n} function computes the primorial
-with respect the the first \code{n} \emph{natural} numbers.
+with respect to the first \code{n} \emph{natural} numbers.
 }
 \section{Precision}{
 

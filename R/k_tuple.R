@@ -20,7 +20,8 @@
 #' canonical name for that relationship to the author's knowledge.
 #'
 #' @inheritParams generate_primes
-#' @param tuple an integer vector representing the target _k_-tuple pattern.
+#' @param tuple an integer vector representing the target _k_-tuple pattern: at
+#'   least two offsets, starting at `0` and strictly increasing.
 #'
 #' @examples
 #' # All twin primes up to 13

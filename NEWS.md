@@ -56,23 +56,32 @@ handled by its underlying type and works as before.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
-  Any invalid `tuple` now errors before the primes are generated.
+  Any invalid `tuple` now errors before the primes are generated, and a
+  repeated offset, _e.g._, `c(0, 2, 2)`, is now an error. 1.x returned an empty
+  list, since such a tuple can never match.
+* `ruth_aaron_pairs()` now errors when `min` is less than 1, and returns an
+  empty list when `min` is greater than `max`. `distinct` must be `TRUE` or
+  `FALSE`.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
 ### Unchanged
 
-`nth_prime(0L)` and `nth_prime(-3L)` behave as they did in 1.x. Matrices and named vectors still work. Functions where a negative input
-is meaningful (`gcd()`, `scm()`, `coprime()`, `next_prime()`, `prev_prime()`)
-still accept it.
+`nth_prime(0L)` and `nth_prime(-3L)` behave as they did in 1.x. Matrices and
+named vectors still work. Functions where a negative input is meaningful
+(`gcd()`, `scm()`, `coprime()`, `next_prime()`, `prev_prime()`) still accept
+it.
 
 ### C++ interface
 
-The C++ interface exported for use via `LinkingTo: primes` has been renamed.
-The exported C++ functions now carry an `_impl` suffix (_e.g._,
+Functions in the C++ interface exported for use via `LinkingTo: primes` that
+had the same name as an R function now carry an `_impl` suffix (_e.g._,
 `primes::gcd()` is now `primes::gcd_impl()`, `primes::is_prime()` is now
 `primes::is_prime_impl()`). Packages that call these from C++ must update their
-calls. Note that the `_impl` functions do no input validation.
+calls. `gcd_()`, `scm_()`, `Rgcd_()`, `Rscm_()`, and `generate_primes_()` keep
+their names. The fixes listed below apply to the C++ functions too; in
+particular, `scm_()` and `Rscm_()` now return `NA_INTEGER` when the result
+overflows. Note that the C++ functions do no input validation.
 
 ## What 2.0 fixes
 
@@ -85,10 +94,17 @@ These 1.x results were silently wrong:
 * `Rgcd(12, 18, NA)` returned `-2`, and `Rgcd(3, 4, NA)` returned `1`. `NA`
   now gives `NA` wherever it is in the input.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
+* `is_prime(bit64::as.integer64(7))` returned `FALSE`, reading the 64-bit
+  value's raw bits as a `double`. `integer64` input is now an error.
 * `phi(-6)` returned `-6`.
 * `scm(2147483647L, 2L)` returned `2`. A least common multiple above
   2,147,483,647 is now `NA` with a warning, in `scm()` and `Rscm()`.
-* `prime_count(1, TRUE)` returned `NA`; it is now `0`.
+* `prime_count(1, TRUE)` returned `NA`; it is now `0`. `prime_count(2, FALSE)`
+  returned `2`, over-counting the one prime; both bounds now hold for every
+  positive `n`.
+* `ruth_aaron_pairs(-3, 6)` reported (-3, -2), (-2, -1), (-1, 0), and (0, 1) as
+  Ruth-Aaron pairs, because numbers below 2 have no prime factors and so all
+  sum to 0. In 1.x the pairs also came back reversed when `min > max`.
 * `Rgcd(-4)` and `Rscm(-4)` returned `-4`; they are now `4`, like every other
   result of `gcd()` and `scm()`.
 * `nth_prime_estimate(1, TRUE)` returned `NA`, and `nth_prime_estimate(2, TRUE)`

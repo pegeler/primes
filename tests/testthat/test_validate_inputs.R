@@ -17,6 +17,14 @@ test_that("factors, dates, and durations are rejected", {
   expect_error(validate_inputs(Sys.time()), "input must be numeric")
 })
 
+test_that("bit64 integer64 is rejected rather than misread", {
+  # Its bits read as a double are a tiny number that truncates to 0
+  expect_error(
+    validate_inputs(structure(0, class = "integer64")),
+    "integer64 input is not supported"
+  )
+})
+
 test_that("classed numerics are validated by their underlying type", {
   # NOTE: no base type in the class vector, so dispatch reaches the default
   expect_identical(validate_inputs(structure(7, class = "foo")), 7L)

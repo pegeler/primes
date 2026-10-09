@@ -8,7 +8,7 @@ Authors@R: c(
     person("Paul", "Egeler", email = "paulegeler@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6948-9498"))
     )
 Description: Fast functions for dealing with prime numbers, such as testing
-    whether a number is prime and generating a sequence prime numbers.
+    whether a number is prime and generating a sequence of prime numbers.
     Additional functions include finding prime factors and Ruth-Aaron pairs,
     finding next and previous prime numbers in the series, finding or estimating
     the nth prime, estimating the number of primes less than or equal to an
@@ -21,8 +21,8 @@ Depends: R (>= 4.0)
 Imports: Rcpp
 LinkingTo: Rcpp
 Suggests: testthat, withr
-URL: https://github.com/ironholds/primes
-BugReports: https://github.com/ironholds/primes/issues
+URL: https://github.com/pegeler/primes
+BugReports: https://github.com/pegeler/primes/issues
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 LazyData: true

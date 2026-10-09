@@ -50,6 +50,13 @@ validate_inputs.default <- function(x, ...) {
   validate_inputs(unclass(x), ...)
 }
 
+#' @exportS3Method
+validate_inputs.integer64 <- function(x, ...) {
+  # NOTE: bit64 stores the 64 bits in a double, so unclass() would read them
+  # as a tiny, meaningless double
+  stop("integer64 input is not supported; convert it with as.integer()")
+}
+
 validate_flag <- function(x, name) {
   if (!is.logical(x) || length(x) != 1L || is.na(x))
     stop(sprintf("'%s' must be TRUE or FALSE", name))

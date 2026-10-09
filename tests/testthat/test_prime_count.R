@@ -5,6 +5,15 @@ test_that("Number of primes <= n", {
   expect_lte(prime_count(100, FALSE), length(generate_primes(max = 100)))
 })
 
+test_that("Both bounds hold for every n up to 10,000", {
+  # 2 / log(2) truncates to 2, so n = 2 used to over-count
+  expect_identical(prime_count(2L, FALSE), 1L)
+  n <- 1:10000
+  pi_n <- cumsum(is_prime(n))
+  expect_true(all(vapply(n, prime_count, 1L, upper_bound = FALSE) <= pi_n))
+  expect_true(all(vapply(n, prime_count, 1L, upper_bound = TRUE) >= pi_n))
+})
+
 test_that("Value of nth prime", {
   expect_gte(nth_prime_estimate(100, TRUE),  generate_n_primes(100)[100])
   expect_lte(nth_prime_estimate(100, FALSE), generate_n_primes(100)[100])

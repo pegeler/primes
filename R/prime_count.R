@@ -5,9 +5,9 @@
 #' prime number.
 #'
 #' The `prime_count` function estimates the number of primes \eqn{\le n}{<= n}.
-#' When `upper_bound = FALSE`, it is guaranteed to under-estimate for all
-#' \eqn{n \ge 17}{n >= 17}.
-#' When `upper_bound = TRUE`, it holds for all positive \eqn{n}.
+#' Both bounds hold for all positive \eqn{n}: with `upper_bound = FALSE` the
+#' estimate is never more than \eqn{\pi(n)}{pi(n)}, and with
+#' `upper_bound = TRUE` it is never less.
 #'
 #' The `nth_prime_estimate` function brackets upper and lower bound values of
 #' the nth prime. It is valid for \eqn{n \ge 6}{n >= 6}; for smaller \eqn{n}
