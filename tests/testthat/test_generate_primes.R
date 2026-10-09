@@ -15,8 +15,8 @@ test_that("The sieve agrees with is_prime at odd, even, and square limits", {
   # is_prime uses trial division, so this checks the sieve independently
   limits <- c(2L, 3L, 4L, 9L, 10L, 25L, 26L, 49L, 50L, 120L, 121L, 997L)
   expect_equal(
-    lapply(limits, \(max) generate_primes(2L, max)),
-    lapply(limits, \(max) which(is_prime(seq_len(max))))
+    lapply(limits, function(max) generate_primes(2L, max)),
+    lapply(limits, function(max) which(is_prime(seq_len(max))))
   )
 
   primes <- which(is_prime(1:997))
