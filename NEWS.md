@@ -81,12 +81,15 @@ These 1.x results were silently wrong:
 * `next_prime(2^31)` returned `2`.
 * `gcd(NA, 4)` returned `4`.
 * `next_prime(c(7L, NA))` returned `c(11, 2)`.
-* `Rgcd(12, 18, NA)` returned `-2`.
+* `Rgcd(12, 18, NA)` returned `-2`, and `Rgcd(3, 4, NA)` returned `1`. `NA`
+  now gives `NA` wherever it is in the input.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
 * `phi(-6)` returned `-6`.
 * `scm(2147483647L, 2L)` returned `2`. A least common multiple above
   2,147,483,647 is now `NA` with a warning, in `scm()` and `Rscm()`.
 * `prime_count(1, TRUE)` returned `NA`; it is now `0`.
+* `Rgcd(-4)` and `Rscm(-4)` returned `-4`; they are now `4`, like every other
+  result of `gcd()` and `scm()`.
 * `nth_prime_estimate(1, TRUE)` returned `NA`, and `nth_prime_estimate(2, TRUE)`
   returned `0`. For `n` from 1 to 5, where the bounds do not hold, it now
   returns the exact prime.
@@ -160,6 +163,9 @@ calling code as described above.
   template (`recycle_binary_op`) with modulo-based index recycling, replacing
   duplicated loop code and the previous `Rcpp::rep_len` approach. It also
   handles `NA` propagation in one place.
+
+* `gcd()` and `scm()` use `std::gcd` and `std::lcm`, so the package now
+  requires C++17 (the default since R 4.3).
 
 * **Undefined behavior.** Fixed integer overflows and out-of-range `double` to
   `int` conversions found with clang's UBSan, some reachable from ordinary
