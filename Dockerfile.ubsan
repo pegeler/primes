@@ -8,9 +8,13 @@
 # the slow cases):
 #   mkdir -p .local && docker run --rm -v "$PWD:/src:ro" \
 #     -e NOT_CRAN=true -e PRIMES_TEST_HEAVY=true r-ubsan-local:deps bash -c \
-#     'cp -r /src /tmp/primes && cd /tmp/primes && RD CMD INSTALL . \
+#     'cp -r /src /tmp/primes && cd /tmp/primes && RD CMD INSTALL --preclean . \
 #      && cd tests && RDscript testthat.R' 2>&1 | tee .local/ubsan.log
 #   grep -n "runtime error\|SUMMARY" .local/ubsan.log
+#
+# --preclean matters: the copy brings along any object files from a host build
+# (R CMD INSTALL, or load_all() via roxygenise()), and without it make reuses
+# them, so most of the package would not be instrumented.
 #
 # halt_on_error makes the first UBSan report abort the run; the grep is a
 # backstop.
