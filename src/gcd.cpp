@@ -13,10 +13,12 @@ int gcd_(int m, int n) { return std::gcd(m, n); }
 int Rgcd_(const Rcpp::IntegerVector &x) {
   int out = 0;  // gcd(0, a) = |a|
 
-  for (auto it = x.begin(); it != x.end() && out != 1; ++it) {
+  // NOTE: Keep scanning after reaching 1 so that a later NA is not missed
+  for (auto it = x.begin(); it != x.end(); ++it) {
     if (Rcpp::IntegerVector::is_na(*it))
       return NA_INTEGER;
-    out = gcd_(out, *it);
+    if (out != 1)
+      out = gcd_(out, *it);
   }
   return out;
 }

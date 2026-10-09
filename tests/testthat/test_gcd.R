@@ -57,6 +57,8 @@ test_that("NAs propagate in coprime", {
 
 test_that("NAs propagate in reduction functions", {
   expect_equal(Rgcd(c(12L, NA, 36L)), NA_integer_)
+  # An NA after the gcd reaches 1 must not be skipped
+  expect_identical(Rgcd(3L, 4L, NA), NA_integer_)
   expect_equal(Rscm(c(12L, NA, 36L)), NA_integer_)
 })
 

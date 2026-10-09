@@ -81,7 +81,8 @@ These 1.x results were silently wrong:
 * `next_prime(2^31)` returned `2`.
 * `gcd(NA, 4)` returned `4`.
 * `next_prime(c(7L, NA))` returned `c(11, 2)`.
-* `Rgcd(12, 18, NA)` returned `-2`.
+* `Rgcd(12, 18, NA)` returned `-2`, and `Rgcd(3, 4, NA)` returned `1`. `NA`
+  now gives `NA` wherever it is in the input.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
 * `phi(-6)` returned `-6`.
 * `scm(2147483647L, 2L)` returned `2`. A least common multiple above
