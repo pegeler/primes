@@ -11,12 +11,9 @@ int gcd_(int m, int n) { return std::gcd(m, n); }
 
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
-  int out = x[0];
+  int out = 0;  // gcd(0, a) = |a|
 
-  if (Rcpp::IntegerVector::is_na(out))
-    return NA_INTEGER;
-
-  for (auto it = x.begin() + 1; it != x.end() && out != 1; ++it) {
+  for (auto it = x.begin(); it != x.end() && out != 1; ++it) {
     if (Rcpp::IntegerVector::is_na(*it))
       return NA_INTEGER;
     out = gcd_(out, *it);
@@ -36,9 +33,9 @@ int scm_(int m, int n) {
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
   return std::accumulate(
-    x.begin() + 1,
+    x.begin(),
     x.end(),
-    *x.begin(),
+    1,  // lcm(1, a) = |a|
     [](int acc, int y) {
       return acc == NA_INTEGER || y == NA_INTEGER ? NA_INTEGER : scm_(acc, y);
     }

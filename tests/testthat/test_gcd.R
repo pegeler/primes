@@ -24,6 +24,17 @@ test_that("Reduction functions", {
   expect_equal(Rgcd(double(0)), integer(0))
 })
 
+test_that("Reductions are never negative, even for one value", {
+  expect_identical(Rgcd(-4L), 4L)
+  expect_identical(Rscm(-4L), 4L)
+  expect_identical(Rgcd(0L), 0L)
+  expect_identical(Rscm(0L), 0L)
+  expect_identical(Rgcd(-12L, -18L), 6L)
+  expect_identical(Rscm(-4L, -6L), 12L)
+  expect_identical(Rgcd(NA_integer_), NA_integer_)
+  expect_identical(Rscm(NA_integer_), NA_integer_)
+})
+
 test_that("coprime works", {
   expect_true(coprime(35,99))
   expect_false(coprime(72, 210))
