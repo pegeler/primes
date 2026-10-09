@@ -39,9 +39,7 @@ int Rgcd_(const Rcpp::IntegerVector &x) {
   return out;
 }
 
-// NOTE: Returns NA_INTEGER when the result does not fit in an int. The product
-// is widened first because the overflow itself is undefined behavior. The
-// caller is expected to have handled NA inputs already.
+// NOTE: NA when the result does not fit in an int. Inputs must not be NA.
 // [[Rcpp::export]]
 int scm_(int m, int n) {
   if (m == 0 || n == 0)
@@ -51,9 +49,7 @@ int scm_(int m, int n) {
   return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 
-// NOTE: NA (from the input, or from an overflow along the way) has to be
-// checked in the accumulator; scm_ would read it as INT_MIN. This also makes
-// it a single pass over x.
+// NOTE: NA can come from the input or from an overflow along the way
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
   return std::accumulate(

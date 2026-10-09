@@ -56,26 +56,12 @@ handled by its underlying type and works as before.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
-* `scm()` and `Rscm()` return `NA` with a warning when the least common multiple
-  is larger than 2,147,483,647. 1.x returned a wrong number without any
-  warning.
-* `prime_count(1, ...)` returns `0` (1.x returned `NA`), and
-  `nth_prime_estimate()` returns the exact prime for `n` from 1 to 5, where its
-  bounds do not hold. Its result is `NA` when the estimate is larger than
-  2,147,483,647.
-* `generate_n_primes()` and `primorial_p()` give an error for `n` above
-  105,097,565, the number of primes that fit in a 32-bit integer, and
-  `nth_prime()` gives `NA` for those elements. 1.x padded the result with
-  zeros.
-* `next_prime(2147483647L)` returns `NA`, because 2^31 - 1 is prime and there
-  is no larger 32-bit integer.
 * `NA_integer_` is now the way to pass a missing value: a bare `NA` is
   `logical`, which is rejected (see above). _e.g._, `is_prime(NA_integer_)`.
 
 ### Unchanged
 
-`nth_prime(0L)`, `nth_prime(-3L)`, and `prime_count(1, TRUE)` behave as they did
-in 1.x. Matrices and named vectors still work. Functions where a negative input
+`nth_prime(0L)` and `nth_prime(-3L)` behave as they did in 1.x. Matrices and named vectors still work. Functions where a negative input
 is meaningful (`gcd()`, `scm()`, `coprime()`, `next_prime()`, `prev_prime()`)
 still accept it.
 
@@ -98,17 +84,21 @@ These 1.x results were silently wrong:
 * `Rgcd(12, 18, NA)` returned `-2`.
 * `is_prime(factor(7))` returned `FALSE`, from the factor's integer code.
 * `phi(-6)` returned `-6`.
-* `scm(2147483647L, 2L)` returned `2`, and `Rscm(46341L, 46343L, 2L)` returned
-  `194630`. The least common multiple overflowed a 32-bit integer.
-* `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`. It
-  now returns all 105,097,565 primes below 2^31.
-* `nth_prime_estimate(2:5, TRUE)` returned `0 3 6 10`, below the true primes
-  `3 5 7 11`, and `nth_prime_estimate(1, ...)` returned `NA`. So did estimates
-  for `n` above about 1e8.
-* `next_prime(2147483647L)` returned `2`.
-* `generate_n_primes(n)` returned all zeros, and `nth_prime(n)` returned `0`, for
-  `n` above about 100.6 million, including the values up to 105,097,565 that do
-  have a 32-bit answer.
+* `scm(2147483647L, 2L)` returned `2`. A least common multiple above
+  2,147,483,647 is now `NA` with a warning, in `scm()` and `Rscm()`.
+* `prime_count(1, TRUE)` returned `NA`; it is now `0`.
+* `nth_prime_estimate(1, TRUE)` returned `NA`, and `nth_prime_estimate(2, TRUE)`
+  returned `0`. For `n` from 1 to 5, where the bounds do not hold, it now
+  returns the exact prime.
+* `generate_n_primes(n)` returned all zeros, and `nth_prime(n)` returned `0`,
+  for `n` above about 100.6 million. Both now work up to 105,097,565, the
+  number of primes below 2^31. Above that, `generate_n_primes()` and
+  `primorial_p()` error and `nth_prime()` returns `NA`.
+* `generate_primes(2, .Machine$integer.max)` failed with `std::bad_alloc`.
+* `next_prime(2147483647L)` returned `2`; it is now `NA`, as 2^31 - 1 is the
+  largest 32-bit prime.
+* `sexy_prime_triplets()` missed every triplet when `max` was within 6 of
+  2,147,483,647.
 
 ## Upgrading from 1.x
 
@@ -171,13 +161,7 @@ calling code as described above.
   duplicated loop code and the previous `Rcpp::rep_len` approach. It also
   handles `NA` propagation in one place.
 
-* **Undefined behavior.** Running every export against edge values under
-  clang's UBSan found out-of-range `double` to `int` conversions in
-  `prime_count()` and `nth_prime_estimate()`, and signed integer overflow in
-  the sieve's output-size estimate, in `(min - 2)` and `(max + 1)`, in the
-  sieve loop, in `scm()`, and in `next_prime()`. All are fixed. They were
-  reachable by ordinary calls such as `generate_primes(1, 100)`, and, because
-  the C++ interface is exported for `LinkingTo`, some can be reached without
-  the R-level validation. `Dockerfile.ubsan` builds an image to reproduce the
-  run, and `tests/testthat/test_undefined_behavior.R` keeps these cases
-  covered.
+* **Undefined behavior.** Fixed integer overflows and out-of-range `double` to
+  `int` conversions found with clang's UBSan, some reachable from ordinary
+  calls such as `generate_primes(1, 100)`. `Dockerfile.ubsan` reproduces the
+  run; `tests/testthat/test_undefined_behavior.R` keeps the cases covered.

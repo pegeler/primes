@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <algorithm>  // max
 #include <cmath>      // sqrt
+#include <cstdint>    // int64_t
 #include <vector>
 
 #include "primes.h"
@@ -20,31 +21,18 @@ std::vector<int> generate_primes_(int min, int max) {
   if (max < 2 || min > max)
     return {};
 
-  // NOTE: Equal to (max + 1) / 2 - 1 without the overflow at INT_MAX. For odd
-  // max = 2k + 1 both are k; for even max = 2k both are k - 1.
-  int len = (max - 1) / 2;
+  int len = (max - 1) / 2;  // (max + 1) / 2 - 1, without overflow
   std::vector<bool> a(len, true);
-  for (int i = 3, stop = sqrt((double)max); i <= stop; i += 2) {
-    if (!a[num2index(i)])
-      continue;
-
-    // Stop when the next multiple would pass max. Testing max - p rather than
-    // p + inc keeps the last step from overflowing int when max is near
-    // INT_MAX. p <= max holds throughout because i * i <= max.
-    for (int p = i * i, inc = i * 2; ; p += inc) {
-      a[num2index(p)] = false;
-      if (max - p < inc)
-        break;
-    }
-  }
+  for (int i = 3, stop = sqrt((double)max); i <= stop; i += 2)
+    if (a[num2index(i)])
+      for (std::int64_t p = i * i; p <= max; p += 2 * i)
+        a[num2index(p)] = false;
 
   std::vector<int> out;
   out.reserve(estimate_output_size(min, max));
 
   if (min <= 2)
     out.push_back(2);
-  // NOTE: Testing min > 2 first keeps (min - 2) from overflowing for min near
-  // -INT_MAX; for min <= 2 the quotient is never positive anyway.
   for (int i = min > 2 ? (min - 2) / 2 : 0; i < len; i++)
     if (a[i])
       out.push_back(index2num(i));

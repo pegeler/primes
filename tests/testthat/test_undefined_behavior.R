@@ -1,66 +1,51 @@
 context("Undefined behavior at C++ boundaries")
 
-# NOTE: These call the compiled `*_impl` routines directly. The exported R
-# functions validate their inputs, but the C++ interface is also exported for
-# use via LinkingTo, where nothing validates. Each block records a finding from
-# running every export against edge values under clang UBSan. There are no
-# real assertions on purpose: the only goal is for a sanitizer build to execute
-# the offending expression, and the closing expect_true(TRUE) just keeps
-# testthat from flagging the test as empty. Fixed findings stay here so a
-# sanitizer run keeps covering them; the fixed behavior is asserted in the
-# per-function test files. See Dockerfile.ubsan.
+# NOTE: Each case runs code that once had undefined behavior, so that a
+# sanitizer build (see Dockerfile.ubsan) keeps covering it. Many only need to
+# run, hence expect_true(TRUE); do not remove them as redundant. Several call
+# the `*_impl` routines directly, because the C++ interface is exported for
+# LinkingTo and skips the R-level validation.
 
 INT_MAX <- .Machine$integer.max
 
 test_that("prime_count_impl does not convert Inf or NaN to int", {
-  # prime_count.cpp: n / log(n) is Inf at n = 1 and NaN for n < 0. Zero is a
-  # control: 0 / log(0) is -0, which converts safely.
+  # n / log(n) is Inf at n = 1 and NaN for n < 0
   for (upper_bound in c(TRUE, FALSE)) {
     for (n in c(-INT_MAX, -1L, 0L, 1L)) {
-      prime_count_impl(n, upper_bound)
+      expect_identical(prime_count_impl(n, upper_bound), 0L)
     }
   }
-  expect_true(TRUE)
 })
 
 test_that("nth_prime_estimate_impl stays within int range", {
-  # prime_count.cpp: log(1 * log(1)) is -Inf at n = 1, and the estimate exceeds
-  # INT_MAX for n near INT_MAX.
+  # log(1 * log(1)) is -Inf, and the estimate exceeds INT_MAX near INT_MAX
   for (upper_bound in c(TRUE, FALSE)) {
-    nth_prime_estimate_impl(1L, upper_bound)
-    nth_prime_estimate_impl(INT_MAX, upper_bound)
+    expect_identical(nth_prime_estimate_impl(1L, upper_bound), 2L)
+    expect_identical(nth_prime_estimate_impl(INT_MAX, upper_bound), NA_integer_)
   }
-  expect_true(TRUE)
 })
 
 test_that("generate_primes_ accepts min at or below 1", {
-  # sieve.cpp: estimate_output_size() subtracts prime_count_impl(min, FALSE),
-  # which is INT_MIN (cast from Inf or NaN) for min <= -1 or min == 1, and
-  # X - INT_MIN overflows. Separately, (min - 2) overflows near -INT_MAX.
+  # The output-size estimate subtracted INT_MIN, and (min - 2) overflowed
   for (min in c(-INT_MAX, -10L, -1L, 0L, 1L)) {
     generate_primes_(min, 100L)
   }
   generate_primes_(-INT_MAX, 3L)
   sexy_prime_triplets_impl(-INT_MAX, 3L)
-  expect_true(TRUE)
-})
-
-test_that("exported wrappers survive min at or below 1", {
-  # Natural calls that reach the same code through validated inputs
   generate_primes(1L, 100L)
   twin_primes(1, 100)
   k_tuple(-10L, 100L, c(0L, 2L))
-  for (upper_bound in c(TRUE, FALSE)) {
-    prime_count(1L, upper_bound)
-    nth_prime_estimate(1L, upper_bound)
-    nth_prime_estimate(INT_MAX, upper_bound)
-  }
+  expect_true(TRUE)
+})
+
+test_that("sexy_prime_triplets_impl at INT_MAX", {
+  # max + 6 overflowed
+  sexy_prime_triplets_impl(INT_MAX - 20L, INT_MAX)
   expect_true(TRUE)
 })
 
 test_that("scm_impl does not overflow int", {
-  # gcd.cpp: m / gcd(m, n) * n exceeds INT_MAX when the least common multiple
-  # is out of range
+  # m / gcd(m, n) * n overflowed
   scm_impl(-INT_MAX, 2L)
   scm_impl(2L, -INT_MAX)
   scm_impl(INT_MAX, 2L)
@@ -68,17 +53,13 @@ test_that("scm_impl does not overflow int", {
 })
 
 test_that("next_prime_impl at INT_MAX", {
-  # next_prime.cpp: ++n overflows, wrapping to INT_MIN and scanning ~2^31
-  # candidates. No larger prime is representable as an int.
-  skip_unless_heavy()
-  next_prime_impl(INT_MAX)
-  expect_true(TRUE)
+  # ++n overflowed and wrapped to INT_MIN
+  expect_identical(next_prime_impl(INT_MAX), NA_integer_)
 })
 
 test_that("generate_primes_ at INT_MAX", {
-  # sieve.cpp: (max + 1) overflows, and p += inc in the sieve loop can pass
-  # INT_MAX. Allocates a ~128 MB bit vector and takes a while.
+  # (max + 1) overflowed, and so could p += inc in the sieve loop.
+  # Allocates a ~128 MB bit vector.
   skip_unless_heavy()
-  generate_primes_(INT_MAX, INT_MAX)
-  expect_true(TRUE)
+  expect_identical(generate_primes_(INT_MAX, INT_MAX), INT_MAX)
 })

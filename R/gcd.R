@@ -67,19 +67,6 @@ NULL
 SCM_OVERFLOW_MSG <-
   "least common multiple is too large for a 32-bit integer; returning NA"
 
-# NOTE: The C++ returns NA for a least common multiple outside the range of
-# int, which looks just like an NA that came from the input. Without NAs in the
-# input any NA in the output must be an overflow; otherwise work out which is
-# which position by position, with the same recycling as the C++.
-scm_overflowed <- function(out, m, n) {
-  if (!anyNA(m) && !anyNA(n))
-    return(TRUE)
-
-  len <- length(out)
-  input_na <- rep_len(is.na(m), len) | rep_len(is.na(n), len)
-  any(is.na(out) & !input_na)
-}
-
 #' @rdname gcd
 #' @export
 gcd <- function(m, n) {
@@ -95,7 +82,9 @@ scm <- function(m, n) {
   m <- validate_inputs(m)
   n <- validate_inputs(n)
   out <- .Call('_primes_scm_impl', PACKAGE = 'primes', m, n)
-  if (anyNA(out) && scm_overflowed(out, m, n))
+  # An NA in the output that is not from an NA input is an overflow
+  len <- length(out)
+  if (any(is.na(out) & !is.na(rep_len(m, len)) & !is.na(rep_len(n, len))))
     warning(SCM_OVERFLOW_MSG)
 
   out

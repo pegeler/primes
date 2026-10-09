@@ -4,8 +4,7 @@
 
 // [[Rcpp::interfaces(r, cpp)]]
 
-// NOTE: Indices outside 1..P_N_MAX have no 32-bit answer and give NA. Only the
-// largest valid index sets how many primes are generated.
+// Indices outside 1..P_N_MAX have no 32-bit answer
 static inline bool has_nth_prime(int n) { return n > 0 && n <= P_N_MAX; }
 
 // [[Rcpp::export]]

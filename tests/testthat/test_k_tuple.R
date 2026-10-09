@@ -53,3 +53,9 @@ test_that("Sexy prime triplets are correct", {
     )
   )
 })
+
+test_that("Sexy prime triplets are found with max at INT_MAX", {
+  # max + 6 used to overflow and return nothing
+  triplet <- list(c(2147482937L, 2147482943L, 2147482949L))
+  expect_identical(sexy_prime_triplets(2147482932L, .Machine$integer.max), triplet)
+})

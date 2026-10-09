@@ -1,5 +1,6 @@
 #include <Rcpp.h>
 #include <algorithm>
+#include <climits>    // INT_MAX
 #include <vector>
 
 #include "primes.h"
@@ -54,7 +55,8 @@ Rcpp::List k_tuple_impl(int min, int max, std::vector<int> tuple) {
 // [[Rcpp::export]]
 Rcpp::List sexy_prime_triplets_impl(int min, int max) {
   Rcpp::List out;
-  auto primes = generate_primes_(min, max + 6);
+  // Primes up to max + 6 are needed for the p + 18 check; avoid overflow
+  auto primes = generate_primes_(min, max > INT_MAX - 6 ? INT_MAX : max + 6);
   std::vector<int> tuple = {0, 6, 12};
 
   for (auto it = primes.begin(); it != primes.end() && *it <= max - 12; ++it) {

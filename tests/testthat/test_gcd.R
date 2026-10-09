@@ -58,6 +58,7 @@ test_that("scm returns NA with a warning when the result exceeds 32 bits", {
   expect_identical(out, c(2147441940L, NA))
   expect_warning(scm(.Machine$integer.max, 2L), "too large for a 32-bit integer")
   expect_warning(scm(-.Machine$integer.max, 2L), "too large for a 32-bit integer")
+  expect_warning(scm(2L, -.Machine$integer.max), "too large for a 32-bit integer")
   # An NA input is not an overflow, so it must not warn
   expect_silent(scm(c(NA, 4L), 6L))
   # ...but an overflow elsewhere in the same call still does
