@@ -6,8 +6,8 @@
 #'
 #' @param min the lower bound of the sequence.
 #' @param max the upper bound of the sequence.
-#' @param n the number of primes to generate. This is an error above
-#'   105,097,565, the number of primes that fit in a 32-bit integer.
+#' @param n the number of primes to generate. This is an error below zero, and
+#'   above 105,097,565, the number of primes that fit in a 32-bit integer.
 #' @examples
 #' generate_primes(max = 12)
 #' ## [1]  2  3  5  7 11
@@ -27,5 +27,9 @@ generate_primes <- function(min = 2L, max){
 #' @export
 generate_n_primes <- function(n) {
   n <- validate_inputs(n, scalar = TRUE)
+
+  if (n < 0)
+    stop("'n' must be >= zero")
+
   .Call('_primes_generate_n_primes_impl', PACKAGE = 'primes', n)
 }

@@ -26,7 +26,8 @@ test_that("The sieve agrees with is_prime at odd, even, and square limits", {
 test_that("Can generate up to the nth prime", {
   expect_equal(generate_n_primes(5), c(2,3,5,7,11))
   expect_equal(generate_n_primes(0), integer(0))
-  expect_equal(generate_n_primes(-1), integer(0))
+  # A negative count is an error, as in seq_len() and primorial_p()
+  expect_error(generate_n_primes(-1), "must be >= zero")
 })
 
 test_that("Asking for more primes than fit in an int is an error", {

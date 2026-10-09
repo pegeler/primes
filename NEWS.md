@@ -55,6 +55,9 @@ handled by its underlying type and works as before.
   applies to `nth_prime_estimate()`.
 * `generate_primes(NA, 10)` and `generate_n_primes(NA)` now error. 1.x returned
   the primes up to 10 and `integer(0)`, respectively.
+* `generate_n_primes(-1)` now errors, as `primorial_p(-1)`, `seq_len(-1)`, and
+  `integer(-1)` do. 1.x returned `integer(0)`. `generate_n_primes(0)` still
+  returns `integer(0)`.
 * `k_tuple()` with an `NA` in `tuple` still errors, but with a clearer message.
   Any invalid `tuple` now errors before the primes are generated, and a
   repeated offset, _e.g._, `c(0, 2, 2)`, is now an error. 1.x returned an empty
