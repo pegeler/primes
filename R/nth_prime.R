@@ -2,6 +2,7 @@
 #'
 #' Get the n-th prime, \eqn{p_n}, in the sequence of primes.
 #'
+#' @section Range:
 #' The result is a 32-bit integer, so the largest \eqn{n} with an answer is
 #' 105,097,565, for which \eqn{p_n} is 2,147,483,647.
 #'

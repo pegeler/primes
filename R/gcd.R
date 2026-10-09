@@ -5,9 +5,9 @@
 #' numbers are also called _mutually prime_ or _relatively prime_ numbers.
 #' The smallest common multiple is often called the _least common multiple_.
 #'
-#' The greatest common divisor uses Euclid's algorithm, a fast and widely
-#' used method. The smallest common multiple and coprimality are computed using
-#' the gcd, where \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
+#' The greatest common divisor and smallest common multiple use the C++
+#' standard library's `std::gcd` and `std::lcm`. Coprimality is computed using
+#' the gcd. Mathematically, \eqn{scm = \frac{a}{gcd(a, b)} \times b}{scm = a / gcd(a, b) * b}
 #' and two numbers are coprime when \eqn{gcd = 1}.
 #'
 #' The `gcd`, `scm`, and `coprime` functions perform element-wise computation.
@@ -21,6 +21,7 @@
 #' elements are used. It is idiomatically equivalent to `Reduce(gcd, x)` or
 #' `Reduce(scm, x)`, where `x` is a vector of integers, but much faster.
 #'
+#' @section Overflow:
 #' If a least common multiple is too large to be a 32-bit integer (greater than
 #' 2,147,483,647), `scm` and `Rscm` return `NA` for that value and give a
 #' warning.
