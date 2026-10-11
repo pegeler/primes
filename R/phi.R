@@ -21,6 +21,7 @@
 #' @author Paul Egeler, MS
 #' @export
 phi <- function(n) {
+  n <- validate_inputs(n, positive = TRUE)
   factors <- prime_factors(n)
   vapply(
     seq_along(n),

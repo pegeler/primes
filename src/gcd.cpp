@@ -1,94 +1,89 @@
 #include <Rcpp.h>
-#include <algorithm>  // max, swap
-#include <numeric>    // accumulate
-#include <cstdlib>    // abs
+#include <algorithm>  // max
+#include <climits>    // INT_MAX
+#include <cstdint>    // int64_t
+#include <numeric>    // accumulate, gcd, lcm
 
 // [[Rcpp::interfaces(r, cpp)]]
 
 // [[Rcpp::export]]
-int gcd_(int m, int n) {
-
-  m = abs(m), n = abs(n);
-  if (n > m)
-    std::swap(m, n);
-
-  // Euclid's Algorithm
-  while (n > 0) {
-    int r = m % n;
-    m = n;
-    n = r;
-  }
-
-  return m;
-}
+int gcd_(int m, int n) { return std::gcd(m, n); }
 
 // [[Rcpp::export]]
 int Rgcd_(const Rcpp::IntegerVector &x) {
-  int out = x[0];
-  for (auto it = x.begin() + 1; it != x.end() && out != 1; ++it) {
-    out = gcd_(out, *it);
+  int out = 0;  // gcd(0, a) = |a|
+
+  // NOTE: Keep scanning after reaching 1 so that a later NA is not missed
+  for (auto it = x.begin(); it != x.end(); ++it) {
+    if (Rcpp::IntegerVector::is_na(*it))
+      return NA_INTEGER;
+    if (out != 1)
+      out = gcd_(out, *it);
   }
   return out;
 }
 
+// NOTE: NA when the result does not fit in an int. Inputs must not be NA.
 // [[Rcpp::export]]
 int scm_(int m, int n) {
-  return m == 0 || n == 0 ? 0 : abs(m / gcd_(m, n) * n);
+  // Computed in 64 bits, where the lcm of two ints always fits
+  std::int64_t out = std::lcm<std::int64_t, std::int64_t>(m, n);
+  return out > INT_MAX ? NA_INTEGER : static_cast<int>(out);
 }
 
+// NOTE: NA can come from the input or from an overflow along the way
 // [[Rcpp::export]]
 int Rscm_(const Rcpp::IntegerVector &x) {
   return std::accumulate(
-    x.begin() + 1,
+    x.begin(),
     x.end(),
-    *x.begin(),
-    scm_
+    1,  // lcm(1, a) = |a|
+    [](int acc, int y) {
+      return acc == NA_INTEGER || y == NA_INTEGER ? NA_INTEGER : scm_(acc, y);
+    }
   );
 }
 
-//' @rdname gcd
-//' @export
-// [[Rcpp::export]]
-Rcpp::IntegerVector gcd(const Rcpp::IntegerVector &m,
-                        const Rcpp::IntegerVector &n) {
+template <int (*Op)(int, int)>
+Rcpp::IntegerVector recycle_binary_op(const Rcpp::IntegerVector &m,
+                                      const Rcpp::IntegerVector &n) {
   if (!m.size() || !n.size())
     return {};
 
   R_xlen_t len = std::max(m.size(), n.size());
+  R_xlen_t m_len = m.size(), n_len = n.size();
   Rcpp::IntegerVector out(len);
-  auto a = Rcpp::rep_len(m, len);
-  auto b = Rcpp::rep_len(n, len);
 
-  for (R_xlen_t i = 0; i < len; i++)
-    out[i] = gcd_(a[i], b[i]);
+  for (R_xlen_t i = 0; i < len; i++) {
+    int a = m[i % m_len], b = n[i % n_len];
+    out[i] = Rcpp::IntegerVector::is_na(a) || Rcpp::IntegerVector::is_na(b)
+                 ? NA_INTEGER
+                 : Op(a, b);
+  }
 
   return out;
 }
 
-//' @rdname gcd
-//' @aliases lcm
-//' @export
 // [[Rcpp::export]]
-Rcpp::IntegerVector scm(const Rcpp::IntegerVector &m,
-                        const Rcpp::IntegerVector &n) {
-  if (!m.size() || !n.size())
-    return {};
-
-  R_xlen_t len = std::max(m.size(), n.size());
-  Rcpp::IntegerVector out(len);
-  auto a = Rcpp::rep_len(m, len);
-  auto b = Rcpp::rep_len(n, len);
-
-  for (R_xlen_t i = 0; i < len; i++)
-    out[i] = scm_(a[i], b[i]);
-
-  return out;
+Rcpp::IntegerVector gcd_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
+  return recycle_binary_op<gcd_>(m, n);
 }
 
-//' @rdname gcd
-//' @export
 // [[Rcpp::export]]
-Rcpp::LogicalVector coprime(const Rcpp::IntegerVector &m,
-                            const Rcpp::IntegerVector &n) {
-  return gcd(m, n) == 1;
+Rcpp::IntegerVector scm_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
+  return recycle_binary_op<scm_>(m, n);
+}
+
+// [[Rcpp::export]]
+Rcpp::LogicalVector coprime_impl(
+    const Rcpp::IntegerVector &m,
+    const Rcpp::IntegerVector &n
+) {
+  return gcd_impl(m, n) == 1;
 }

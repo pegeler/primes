@@ -1,5 +1,7 @@
 #include <Rcpp.h>
-#include <algorithm>
+#include <algorithm>  // adjacent_find
+#include <climits>    // INT_MAX
+#include <functional> // greater_equal
 #include <vector>
 
 #include "primes.h"
@@ -26,19 +28,19 @@ match_tuple(std::vector<int>::iterator first,
   return first;
 }
 
-//' @rdname k_tuple
-//' @export
 // [[Rcpp::export]]
-Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
-  Rcpp::List out;
-  auto primes = generate_primes_(min, max);
-
+Rcpp::List k_tuple_impl(int min, int max, std::vector<int> tuple) {
   if (tuple.size() < 2)
     Rcpp::stop("`tuple` size must be at least 2.");
   if (tuple[0] != 0)
     Rcpp::stop("the first element of `tuple` must be zero.");
-  if (!std::is_sorted(tuple.begin(), tuple.end()))
-    Rcpp::stop("the elements of `tuple` must be in ascending order.");
+  // A repeated offset could never match, so it would silently find nothing
+  if (std::adjacent_find(tuple.begin(), tuple.end(),
+                         std::greater_equal<int>()) != tuple.end())
+    Rcpp::stop("the elements of `tuple` must be in strictly ascending order.");
+
+  Rcpp::List out;
+  auto primes = generate_primes_(min, max);
 
   for (auto it = primes.begin();
        it != primes.end() && *it <= max - tuple.back(); ++it)
@@ -53,12 +55,11 @@ Rcpp::List k_tuple(int min, int max, std::vector<int> tuple) {
 }
 
 // Because sexy prime triplets stipulate that p + 18 is composite...
-//' @rdname k_tuple
-//' @export
 // [[Rcpp::export]]
-Rcpp::List sexy_prime_triplets(int min, int max) {
+Rcpp::List sexy_prime_triplets_impl(int min, int max) {
   Rcpp::List out;
-  auto primes = generate_primes_(min, max + 6);
+  // Primes up to max + 6 are needed for the p + 18 check; avoid overflow
+  auto primes = generate_primes_(min, max > INT_MAX - 6 ? INT_MAX : max + 6);
   std::vector<int> tuple = {0, 6, 12};
 
   for (auto it = primes.begin(); it != primes.end() && *it <= max - 12; ++it) {

@@ -1,36 +1,28 @@
 #include <Rcpp.h>
-#include <algorithm>  // max_element
 
 #include "primes.h"
 
 // [[Rcpp::interfaces(r, cpp)]]
 
-//' Get the n-th Prime from the Sequence of Primes.
-//'
-//' Get the n-th prime, \eqn{p_n}, in the sequence of primes.
-//'
-//' @param x an integer vector.
-//'
-//' @examples
-//' nth_prime(5)
-//' ## [1] 11
-//'
-//' nth_prime(c(1:3, 7))
-//' ## [1]  2  3  5 17
-//' @return An integer vector.
-//' @author Paul Egeler, MS
-//' @export
+// Indices outside 1..P_N_MAX have no 32-bit answer
+static inline bool has_nth_prime(int n) { return n > 0 && n <= P_N_MAX; }
+
 // [[Rcpp::export]]
-Rcpp::IntegerVector nth_prime(const Rcpp::IntegerVector &x) {
+Rcpp::IntegerVector nth_prime_impl(const Rcpp::IntegerVector &x) {
   if (!x.size())
     return {};
 
-  auto primes = generate_n_primes(*std::max_element(x.begin(), x.end()));
+  int max = 0;
+  for (auto n : x)
+    if (has_nth_prime(n) && n > max)
+      max = n;
+
+  auto primes = generate_n_primes_impl(max);
   auto out = Rcpp::IntegerVector(x.size());
   auto it = out.begin();
 
   for (auto n : x)
-    *(it++) = n > 0 ? primes[n - 1] : NA_INTEGER;
+    *(it++) = has_nth_prime(n) ? primes[n - 1] : NA_INTEGER;
 
   return out;
 }

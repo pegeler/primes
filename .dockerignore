@@ -1,0 +1,2 @@
+# Dockerfile.ubsan does not COPY anything from the repo, so send nothing.
+*

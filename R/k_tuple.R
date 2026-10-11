@@ -20,7 +20,8 @@
 #' canonical name for that relationship to the author's knowledge.
 #'
 #' @inheritParams generate_primes
-#' @param tuple an integer vector representing the target _k_-tuple pattern.
+#' @param tuple an integer vector representing the target _k_-tuple pattern: at
+#'   least two offsets, starting at `0` and strictly increasing.
 #'
 #' @examples
 #' # All twin primes up to 13
@@ -51,20 +52,39 @@ NULL
 
 #' @rdname k_tuple
 #' @export
+k_tuple <- function(min, max, tuple) {
+  min <- validate_inputs(min, scalar = TRUE)
+  max <- validate_inputs(max, scalar = TRUE)
+  tuple <- validate_inputs(tuple)
+  if (anyNA(tuple))
+    stop("'tuple' must not contain NA")
+  .Call('_primes_k_tuple_impl', PACKAGE = 'primes', min, max, tuple)
+}
+
+#' @rdname k_tuple
+#' @export
+sexy_prime_triplets <- function(min, max) {
+  min <- validate_inputs(min, scalar = TRUE)
+  max <- validate_inputs(max, scalar = TRUE)
+  .Call('_primes_sexy_prime_triplets_impl', PACKAGE = 'primes', min, max)
+}
+
+#' @rdname k_tuple
+#' @export
 twin_primes <- function(min, max)
-  k_tuple(min, max, c(0,2))
+  k_tuple(min, max, c(0L, 2L))
 
 #' @rdname k_tuple
 #' @export
 cousin_primes <- function(min, max)
-  k_tuple(min, max, c(0,4))
+  k_tuple(min, max, c(0L, 4L))
 
 #' @rdname k_tuple
 #' @export
 sexy_primes <- function(min, max)
-  k_tuple(min, max, c(0,6))
+  k_tuple(min, max, c(0L, 6L))
 
 #' @rdname k_tuple
 #' @export
 third_cousin_primes <- function(min, max)
-  k_tuple(min, max, c(0,8))
+  k_tuple(min, max, c(0L, 8L))

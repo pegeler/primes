@@ -7,9 +7,10 @@
 ruth_aaron_pairs(min, max, distinct = FALSE)
 }
 \arguments{
-\item{min}{an integer representing the minimum number to check.}
+\item{min}{a positive integer representing the minimum number to check.}
 
-\item{max}{an integer representing the maximum number to check.}
+\item{max}{an integer representing the maximum number to check. If it is
+less than \code{min}, the result is an empty list.}
 
 \item{distinct}{a logical indicating whether to consider repeating prime
 factors or only distinct prime number factors.}

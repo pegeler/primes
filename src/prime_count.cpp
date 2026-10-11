@@ -1,21 +1,32 @@
 #include <Rcpp.h>
+#include <climits>    // INT_MAX
 #include <cmath>
 
 // [[Rcpp::interfaces(r, cpp)]]
 
 static const double prime_count_c = 30 * log((double)113) / 113;
 
-//' @rdname prime_count
-//' @export
 // [[Rcpp::export]]
-int prime_count(int n, bool upper_bound) {
+int prime_count_impl(int n, bool upper_bound) {
+  // Exact below 3: n / log(n) is Inf or NaN below 2, and 2 / log(2)
+  // truncates to 2, but there is only one prime <= 2
+  if (n < 3)
+    return n == 2;
+
   return (upper_bound ? prime_count_c : 1) * n / log((double)n);
 }
 
-//' @rdname prime_count
-//' @export
 // [[Rcpp::export]]
-int nth_prime_estimate(int n, bool upper_bound) {
+int nth_prime_estimate_impl(int n, bool upper_bound) {
+  // The bounds need n >= 6, so the first five primes are exact
+  static const int first_primes[] = {2, 3, 5, 7, 11};
+  if (n < 1)
+    return NA_INTEGER;
+  if (n < 6)
+    return first_primes[n - 1];
+
   double c = upper_bound ? 0 : 1;
-  return n * (log(n * log((double)n)) - c);
+  double est = n * (log(n * log((double)n)) - c);
+  // NA when the estimate does not fit in an int (n above about 100.6 million)
+  return est < INT_MAX + 1.0 ? static_cast<int>(est) : NA_INTEGER;
 }
